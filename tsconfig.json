@@ -24,8 +24,8 @@
       "@/*": [
         "./src/*"
       ],
-      "@style/*": [
-        "./src/assets/style/*"
+      "@styles/*": [
+        "./src/assets/styles/*"
       ],
       "@imgs/*": [
         "./src/assets/imgs/*"
@@ -33,10 +33,7 @@
     },
     "plugins": [
       {
-        "name": "typescript-plugin-css-modules",
-        "options": {
-          "customMatcher": "\\.(c|le||lle|sa|sc)ss$"
-        }
+        "name": "typescript-plugin-css-modules"
       }
     ]
   },
