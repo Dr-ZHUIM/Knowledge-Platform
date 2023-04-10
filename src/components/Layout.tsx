@@ -2,32 +2,44 @@ import React, { useState, useEffect, useCallback } from "react";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import { useNavigate } from "react-router-dom";
+import routes, { RouteT } from "@/routes/routes";
 import "./layout.scss";
 
 type MenuItem = Required<MenuProps>["items"][number];
 function getItem(
   label: React.ReactNode,
-  key: React.Key,
-  children?: MenuItem[],
+  path: React.Key,
+  children?: RouteT[],
   type?: "group"
 ): MenuItem {
+  if (children && children.length > 0) {
+    const childrenItem = children.map((child) =>
+      getItem(child.label, child.path, child.children)
+    );
+    return {
+      key: path,
+      children: childrenItem,
+      label,
+      type,
+    } as MenuItem;
+  }
   return {
-    key,
+    key: path,
     children,
     label,
     type,
   } as MenuItem;
 }
 
-const items: MenuItem[] = [
-  getItem("transparentBorder", "/transparentBorder"),
-  getItem("Option 2", "2"),
-];
+const items: MenuItem[] = routes.map((route) =>
+  getItem(route.label, route.path, route.children)
+);
 
 export default function Layout(props: React.PropsWithChildren) {
   const navigate = useNavigate();
 
   const handleNavigate: MenuProps["onClick"] = (info) => {
+    console.log("info", info);
     navigate(info.key);
   };
 
