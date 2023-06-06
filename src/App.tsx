@@ -3,6 +3,8 @@ import "@styles/normalize.scss";
 import { Routes, Route, HashRouter } from "react-router-dom";
 import Layout from "./components/Layout";
 import "antd/dist/reset.css";
+import "@styles/common.scss";
+import "@styles/normalize.scss";
 import * as Components from "@/pages";
 import routes, { RouteT } from "./routes/routes";
 
@@ -20,7 +22,7 @@ const generateRoute = (route: RouteT) => {
     : routers.push(
         <Route
           key={route.label}
-          path={route.label}
+          path={route.path}
           element={route.element}
         ></Route>
       );

@@ -51,7 +51,7 @@ export default function Layout(props: React.PropsWithChildren) {
         style={{ width: 256 }}
         items={items}
       />
-      <main className="main">{props.children}</main>
+      <main className="main flex-container">{props.children}</main>
     </div>
   );
 }

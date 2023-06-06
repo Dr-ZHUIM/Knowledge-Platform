@@ -11,17 +11,22 @@ export declare type RouteT = {
 const routes: RouteT[] = [
   {
     path: "/border",
-    label: "border",
+    label: "边框与背景",
     children: [
       {
-        label: "transparentBorder",
+        label: "透明边框",
         path: "/transparentBorder",
         element: <Pages.TransparentBorder />,
       },
       {
-        label: "multiBorder",
+        label: "多重边框",
         path: "/multiBorder",
         element: <Pages.MultiBorder />,
+      },
+      {
+        label: "条纹背景",
+        path: "/stripesBackground",
+        element: <Pages.StripesBackground />,
       },
     ],
   },
