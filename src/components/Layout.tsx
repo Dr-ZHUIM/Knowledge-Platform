@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useCallback } from "react";
-import type { MenuProps } from "antd";
-import { Menu } from "antd";
-import { useNavigate } from "react-router-dom";
-import routes, { RouteT } from "@/routes/routes";
-import "./layout.scss";
+import React, { useState, useEffect, useCallback } from 'react';
+import type { MenuProps } from 'antd';
+import { Menu } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import routes, { RouteT } from '@/routes/routes';
+import './layout.scss';
 
-type MenuItem = Required<MenuProps>["items"][number];
+type MenuItem = Required<MenuProps>['items'][number];
 function getItem(
   label: React.ReactNode,
   path: React.Key,
   children?: RouteT[],
-  type?: "group"
+  type?: 'group',
 ): MenuItem {
   if (children && children.length > 0) {
     const childrenItem = children.map((child) =>
-      getItem(child.label, child.path, child.children)
+      getItem(child.label, child.path, child.children),
     );
     return {
       key: path,
@@ -32,14 +32,14 @@ function getItem(
 }
 
 const items: MenuItem[] = routes.map((route) =>
-  getItem(route.label, route.path, route.children)
+  getItem(route.label, route.path, route.children),
 );
 
 export default function Layout(props: React.PropsWithChildren) {
   const navigate = useNavigate();
 
-  const handleNavigate: MenuProps["onClick"] = (info) => {
-    console.log("info", info);
+  const handleNavigate: MenuProps['onClick'] = (info) => {
+    console.log('info', info);
     navigate(info.key);
   };
 
@@ -55,4 +55,3 @@ export default function Layout(props: React.PropsWithChildren) {
     </div>
   );
 }
-

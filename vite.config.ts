@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { builtinModules } from "module";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { builtinModules } from 'module';
 import path from 'path';
 
 // https://vitejs.dev/config/
@@ -9,36 +9,32 @@ export default defineConfig({
   server: {
     port: 8080,
     open: true,
-    proxy: {
-    },
+    proxy: {},
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "@imgs": path.resolve(__dirname, "./src/assets/imgs"),
-      "@styles": path.resolve(__dirname, "./src/assets/styles")
-    }
+      '@': path.resolve(__dirname, './src'),
+      '@imgs': path.resolve(__dirname, './src/assets/imgs'),
+      '@styles': path.resolve(__dirname, './src/assets/styles'),
+    },
   },
   base: './',
   assetsInclude: ['**/*.json'],
   optimizeDeps: {
     include: ['react', 'ReactDOM', 'react-router-dom', 'typescript'],
-    exclude: ['electron']
+    exclude: ['electron'],
   },
   build: {
     minify: 'terser',
     outDir: 'build',
     rollupOptions: {
       output: {
-        format: "es",
+        format: 'es',
         chunkFileNames: 'static/js/[name]-[hash].js',
         entryFileNames: 'static/js/[name]-[hash].js',
         assetFileNames: 'src/assets/[ext]/[name]-[hash].[ext]',
       },
-      external: [
-        'electron',
-        ...builtinModules
-      ]
-    }
+      external: ['electron', ...builtinModules],
+    },
   },
-})
+});

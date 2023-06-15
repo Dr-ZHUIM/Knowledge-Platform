@@ -59,7 +59,7 @@ module.exports = {
       },
     ],
     'handle-callback-err': [2, '^(err|error)$'],
-    'jsx-quotes': [2, 'prefer-single'],
+    'jsx-quotes': [2, 'prefer-double'],
     'key-spacing': [
       2,
       {

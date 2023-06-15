@@ -8,7 +8,11 @@ import '@styles/normalize.scss';
 import * as Components from '@/pages';
 import routes, { RouteT } from './routes/routes';
 
+import { getRoutes } from './routes/getRoutes';
+
 const routers: ReactElement[] = [];
+
+getRoutes();
 
 const generateRoute = (route: RouteT) => {
   if (

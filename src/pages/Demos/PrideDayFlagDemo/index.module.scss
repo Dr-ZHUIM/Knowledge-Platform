@@ -15,8 +15,8 @@
     hsl(200deg 85% 70%) 20%,
     hsl(350deg 85% 85%) 20%,
     hsl(350deg 85% 85%) 40%,
-    hsl(0deg 0% 100%) 40%,
-    hsl(0deg 0% 100%) 60%,
+    hsl(0, 39%, 54%) 40%,
+    hsl(0, 43%, 71%) 60%,
     hsl(350deg 85% 85%) 60%,
     hsl(350deg 85% 85%) 80%,
     hsl(200deg 85% 70%) 80%,
@@ -30,4 +30,20 @@
   height: 500px;
   width: 500px;
   aspect-ratio: 3 / 2;
+}
+
+.PrideDayFlagDemo {
+  height: 800px;
+}
+
+.input-group {
+  height: 100px;
+  margin-top: 100px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
 }
