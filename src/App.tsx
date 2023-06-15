@@ -1,12 +1,12 @@
-import { ReactElement, useState } from "react";
-import "@styles/normalize.scss";
-import { Routes, Route, HashRouter } from "react-router-dom";
-import Layout from "./components/Layout";
-import "antd/dist/reset.css";
-import "@styles/common.scss";
-import "@styles/normalize.scss";
-import * as Components from "@/pages";
-import routes, { RouteT } from "./routes/routes";
+import { ReactElement, useState } from 'react';
+import '@styles/normalize.scss';
+import { Routes, Route, HashRouter } from 'react-router-dom';
+import Layout from './components/Layout';
+import 'antd/dist/reset.css';
+import '@styles/common.scss';
+import '@styles/normalize.scss';
+import * as Components from '@/pages';
+import routes, { RouteT } from './routes/routes';
 
 const routers: ReactElement[] = [];
 
@@ -24,14 +24,14 @@ const generateRoute = (route: RouteT) => {
           key={route.label}
           path={route.path}
           element={route.element}
-        ></Route>
+        ></Route>,
       );
 };
 
 routes.forEach((route) => generateRoute(route));
 
 function App() {
-  console.log("routers", routers);
+  console.log('routers', routers);
   return (
     <HashRouter>
       <Layout>
@@ -42,4 +42,3 @@ function App() {
 }
 
 export default App;
-

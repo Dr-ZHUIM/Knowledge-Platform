@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import styles from "./index.module.scss";
+import React, { useState, useEffect } from 'react';
+import styles from './index.module.scss';
 
 export function TransparentBorder() {
   return (
@@ -10,4 +10,3 @@ export function TransparentBorder() {
     </div>
   );
 }
-
