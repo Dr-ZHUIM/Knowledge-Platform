@@ -1,5 +1,6 @@
 import React from 'react';
 import { RouteT } from './routes';
+
 export function getRoutes() {
   return createRoutes();
 }
@@ -33,7 +34,7 @@ function createChildRoute(routeLabel: string, module: Record<string, any>) {
   } as RouteT;
 }
 
-function ModuleToComponent({ FC }: { FC: any }) {
+function ModuleToComponent({ FC }: { FC: React.FC }) {
   return (
     <>
       <FC />
@@ -49,11 +50,3 @@ function getRouteLabel(filePath: string, isChild = false) {
   const pathArr = filePath.split('/');
   return isChild ? pathArr[pathArr.length - 2] : pathArr[3];
 }
-
-// class RoutesCalculator {
-//   get pages() {
-//     return Object.entries(
-//       import.meta.glob('@/pages/**/*.tsx', { eager: true }),
-//     );
-//   }
-// }
