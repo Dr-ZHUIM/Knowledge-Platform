@@ -17,19 +17,22 @@ function createRoutes() {
       );
       return;
     }
-    result.push({
-      path: `/${getRouteLabel(filePath)}`,
-      label: getRouteLabel(filePath),
-      children: [createChildRoute(getRouteLabel(filePath, true), module)],
-    });
+    !checkIsAutoRoute(getRouteLabel(filePath)) &&
+      result.push({
+        path: `/${getRouteLabel(filePath)}`,
+        label: getRouteLabel(filePath),
+        children: [createChildRoute(getRouteLabel(filePath, true), module)],
+      });
   });
   return result;
 }
 
 function createChildRoute(routeLabel: string, module: Record<string, any>) {
+  console.log('module', module);
   return {
     path: `/${routeLabel}`,
-    label: routeLabel,
+    label: module[`label`] || routeLabel,
+    info: '',
     element: <ModuleToComponent FC={module[`${routeLabel}`]} />,
   } as RouteT;
 }
@@ -49,4 +52,8 @@ function getPages(): [string, Record<string, any>][] {
 function getRouteLabel(filePath: string, isChild = false) {
   const pathArr = filePath.split('/');
   return isChild ? pathArr[pathArr.length - 2] : pathArr[3];
+}
+
+function checkIsAutoRoute(label: string) {
+  return label.includes('.tsx');
 }

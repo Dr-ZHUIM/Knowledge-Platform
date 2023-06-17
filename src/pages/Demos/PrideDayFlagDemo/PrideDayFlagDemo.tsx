@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import styles from './index.module.scss';
 
+export const label = '独立日旗帜';
+
 type PrideDayFlagDemoType = {
   numOfColumns: number;
   staggeredDelay: number;

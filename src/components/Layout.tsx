@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import routes, { RouteT } from '@/routes/routes';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
+import { GithubOutlined, UserOutlined } from '@ant-design/icons';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import routes, { RouteT } from '@/routes/routes';
 import './layout.scss';
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -39,18 +40,37 @@ export default function Layout(props: React.PropsWithChildren) {
   const navigate = useNavigate();
 
   const handleNavigate: MenuProps['onClick'] = (info) => {
-    console.log('info', info);
     navigate(info.key);
   };
 
   return (
     <div className="container">
-      <Menu
-        onClick={handleNavigate}
-        mode="inline"
-        style={{ width: 256 }}
-        items={items}
-      />
+      <div className="sider">
+        <div onClick={() => navigate('/')} className="sider-logo" />
+        <Menu
+          onClick={handleNavigate}
+          mode="inline"
+          style={{
+            minWidth: 0,
+            fontSize: '16px',
+            flex: 'auto',
+          }}
+          theme="dark"
+          items={items}
+        />
+        <div className="sider-footer">
+          <a href="https://github.com/Dr-ZHUIM" target="_blank">
+            <GithubOutlined className="sider-icon" />
+          </a>
+          <a
+            href="http://www.zhuim.fun/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <UserOutlined className="sider-icon" />
+          </a>
+        </div>
+      </div>
       <main className="main flex-container">{props.children}</main>
     </div>
   );

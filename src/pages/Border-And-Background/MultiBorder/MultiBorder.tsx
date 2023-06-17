@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
-import styles from "./index.module.scss";
+import React, { useState, useEffect } from 'react';
+import styles from './index.module.scss';
+
+export const label = '多重边框';
 
 export function MultiBorder() {
   return (
@@ -10,4 +12,3 @@ export function MultiBorder() {
     </div>
   );
 }
-

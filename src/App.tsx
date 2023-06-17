@@ -5,8 +5,9 @@ import Layout from './components/Layout';
 import 'antd/dist/reset.css';
 import '@styles/common.scss';
 import '@styles/normalize.scss';
-import * as Components from '@/pages';
+import '@styles/animation.scss';
 import routes, { RouteT } from './routes/routes';
+import Home from './pages/Home';
 
 import { getRoutes } from './routes/getRoutes';
 
@@ -39,7 +40,10 @@ function App() {
   return (
     <HashRouter>
       <Layout>
-        <Routes>{routers}</Routes>
+        <Routes>
+          {routers}
+          <Route path="/" element={<Home />} />
+        </Routes>
       </Layout>
     </HashRouter>
   );
