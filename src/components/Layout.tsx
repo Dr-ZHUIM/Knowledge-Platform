@@ -1,4 +1,4 @@
-import routes, { RouteT } from '@/routes/routes';
+import { RouteT, routes } from '@/routes/routes';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import { GithubOutlined, UserOutlined } from '@ant-design/icons';

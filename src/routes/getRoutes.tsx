@@ -49,8 +49,9 @@ function getPages(): [string, Record<string, any>][] {
   return Object.entries(import.meta.glob('@/pages/**/*.tsx', { eager: true }));
 }
 
-function getRouteLabel(filePath: string, isChild = false) {
+function getRouteLabel(filePath: string, isChild = false, layer?: number) {
   const pathArr = filePath.split('/');
+  console.log('pathArr', pathArr);
   return isChild ? pathArr[pathArr.length - 2] : pathArr[3];
 }
 
