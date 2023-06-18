@@ -28,7 +28,6 @@ function createRoutes() {
 }
 
 function createChildRoute(routeLabel: string, module: Record<string, any>) {
-  console.log('module', module);
   return {
     path: `/${routeLabel}`,
     label: module[`label`] || routeLabel,
@@ -51,7 +50,6 @@ function getPages(): [string, Record<string, any>][] {
 
 function getRouteLabel(filePath: string, isChild = false, layer?: number) {
   const pathArr = filePath.split('/');
-  console.log('pathArr', pathArr);
   return isChild ? pathArr[pathArr.length - 2] : pathArr[3];
 }
 

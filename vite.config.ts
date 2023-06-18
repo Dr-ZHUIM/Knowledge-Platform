@@ -16,6 +16,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '@imgs': path.resolve(__dirname, './src/assets/imgs'),
       '@styles': path.resolve(__dirname, './src/assets/styles'),
+      '@const': path.resolve(__dirname, './src/constants/const'),
+      'node-fetch': 'isomorphic-fetch',
     },
   },
   base: './',

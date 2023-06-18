@@ -29,6 +29,9 @@
       ],
       "@imgs/*": [
         "./src/assets/imgs/*"
+      ],
+      "@const": [
+        "./src/constants/const"
       ]
     },
     "plugins": [
