@@ -1,12 +1,31 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import mdx from '@mdx-js/rollup';
+import remarkEmoji from 'remark-emoji';
 import { builtinModules } from 'module';
+import remarkGFM from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
 import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), mdx()],
+  plugins: [
+    react(),
+    /**
+     * mdx plugins
+     * - remarkPlugins - which can enhance mdx by remark-xxx
+     *   - such as support more components
+     * - rehypePlugins - which can support syntax highlighting
+     *   - such as
+     *    ```js
+     *      console.log(123)
+     *    ```
+     */
+    mdx({
+      remarkPlugins: [remarkGFM, remarkEmoji],
+      rehypePlugins: [rehypeHighlight],
+    }),
+  ],
   server: {
     port: 8080,
     open: true,

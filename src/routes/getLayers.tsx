@@ -13,7 +13,9 @@ function createChildRoute(
     path: `${parentPath}/${routeLabel}`,
     label: module[`label`] || routeLabel,
     info: '',
-    element: <ModuleToComponent FC={module[`${routeLabel}`]} />,
+    element: (
+      <ModuleToComponent FC={module[`${routeLabel}`] || module[`default`]} />
+    ),
   } as RouteT;
 }
 
@@ -25,7 +27,7 @@ function ModuleToComponent({ FC }: { FC: React.FC }) {
   );
 }
 
-function checkIsAutoRoute(label: string) {
+function checkIsHomeRoute(label: string) {
   return label.includes('.tsx');
 }
 
@@ -62,51 +64,32 @@ function createLayers() {
       );
       return;
     }
-    !checkIsAutoRoute(getLabel(filePath, 1)) &&
+    if (!checkIsHomeRoute(getLabel(filePath, 1))) {
       layer[0].children &&
-      layer[0].children.push({
-        path: `/${layerLabel}/${getLabel(filePath, 1)}`,
-        label: getLabel(filePath, 1),
-        children: [
-          createChildRoute(
-            getLabel(filePath, 2),
-            module,
-            `/${layerLabel}/${getLabel(filePath, 1)}`,
-          ),
-        ],
+        layer[0].children.push({
+          path: `/${layerLabel}/${getLabel(filePath, 1)}`,
+          label: getLabel(filePath, 1),
+          children: [
+            createChildRoute(
+              getLabel(filePath, 2),
+              module,
+              `/${layerLabel}/${getLabel(filePath, 1)}`,
+            ),
+          ],
+        });
+    } else if (!layer[0].element) {
+      const currentLayer = layer[0].children || [];
+      currentLayer.unshift({
+        path: `/${layerLabel}/HOME`,
+        label: 'HOME',
+        element: (
+          <ModuleToComponent
+            FC={module[`${layerLabel}`] || module[`default`]}
+          />
+        ),
       });
+    }
   });
   console.log('layers', layers);
   return layers;
 }
-
-// function createRoutes() {
-//   const result: RouteT[] = [];
-//   getPages().forEach(([filePath, module]) => {
-//     const routeExists = result.find(
-//       (route) => route.label === getRouteLabel(filePath),
-//     );
-//     if (routeExists) {
-//       routeExists.children?.push(
-//         createChildRoute(getRouteLabel(filePath, true), module),
-//       );
-//       return;
-//     }
-//     !checkIsAutoRoute(getRouteLabel(filePath)) &&
-//       result.push({
-//         path: `/${getRouteLabel(filePath)}`,
-//         label: getRouteLabel(filePath),
-//         children: [createChildRoute(getRouteLabel(filePath, true), module)],
-//       });
-//   });
-//   return result;
-// }
-
-// function getPages(): [string, Record<string, any>][] {
-//   return Object.entries(import.meta.glob('@/pages/**/*.tsx', { eager: true }));
-// }
-
-// function getRouteLabel(filePath: string, isChild = false) {
-//   const pathArr = filePath.split('/');
-//   return isChild ? pathArr[pathArr.length - 2] : pathArr[3];
-// }

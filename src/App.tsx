@@ -1,38 +1,42 @@
 // libs import
-import { Routes, Route, HashRouter } from 'react-router-dom';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 // routers import
-import { layers, generateRouters } from './routes/getRoutes';
+import { generateRouters } from './routes/getRoutes';
 // components import
 import Layout from './components/Layout/Layout';
-import Home from './pages/Home';
+import ErrorPage from './pages/Error/404';
+import Home from './pages/Home/Home';
 // utils functions import
 import { useResize } from '@/utils/hooks';
 import { setFontSize } from '@/utils/utils';
 //  css modules import
-import 'antd/dist/reset.css';
-import '@styles/normalize.scss';
-import '@styles/common.scss';
-import '@styles/normalize.scss';
 import '@styles/animation.scss';
+import '@styles/common.scss';
+import '@styles/md.scss';
+import '@styles/normalize.scss';
+import 'antd/dist/reset.css';
 
 export const LayerContext = createContext<{
   active: Layer;
   changeActive: (layer: Layer) => void;
-}>({ active: 'CSS', changeActive() {} });
+}>({ active: 'HOME', changeActive() {} });
 
 function App() {
-  const [active, setActive] = useState<Layer>('CSS');
+  const pathname = useLocation().pathname.split('/');
+  const [active, setActive] = useState<Layer>(pathname[1] as Layer);
   useResize(() => {
     const width =
       document.documentElement.clientWidth || document.body.clientWidth;
     isMobile
-      ? setFontSize((width / 375) * 16)
-      : setFontSize((width / 1920) * 16);
+      ? setFontSize((width / 375) * 18)
+      : setFontSize((width / 1920) * 18);
   });
   const routers = useMemo(() => {
-    return generateRouters(layers[active] || []);
+    const result = generateRouters();
+    console.log('result', result);
+    return result;
   }, [active]);
 
   const changeActive = (layer: Layer) => {
@@ -40,16 +44,17 @@ function App() {
   };
 
   return (
-    <HashRouter>
-      <LayerContext.Provider value={{ active, changeActive }}>
-        <Layout>
-          <Routes>
-            {routers}
-            <Route path="/" element={<Home />} />
-          </Routes>
-        </Layout>
-      </LayerContext.Provider>
-    </HashRouter>
+    <LayerContext.Provider value={{ active, changeActive }}>
+      <Layout>
+        <Routes>
+          {routers}
+          <Route path="/HOME" element={<Home />}></Route>
+          <Route path="/Error/404" element={<ErrorPage />}></Route>
+          <Route path="/" element={<Navigate to="/HOME" replace />} />
+          <Route path="/*" element={<Navigate to="Error/404" replace />} />
+        </Routes>
+      </Layout>
+    </LayerContext.Provider>
   );
 }
 

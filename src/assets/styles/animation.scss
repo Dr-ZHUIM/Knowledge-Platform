@@ -20,6 +20,7 @@
 @keyframes unmount {
   to {
     opacity: 0;
+    transform: translateX(-25px);
   }
 }
 

@@ -1,14 +1,20 @@
-import { layers } from '@/routes/getRoutes';
 import { LayerContext } from '@/App';
+import { layers } from '@/routes/getRoutes';
+import { GithubOutlined, UserOutlined } from '@ant-design/icons';
+import { logos } from '@imgs/logos';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
-import { GithubOutlined, UserOutlined } from '@ant-design/icons';
-import React, { useContext, useMemo, useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { logos } from '@imgs/logos';
-import SiderIcon from './SiderIcon/SiderIcon';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './layout.scss';
 import Logo from './Logo/Logo';
+import SiderIcon from './SiderIcon/SiderIcon';
 
 type MenuItem = Required<MenuProps>['items'][number];
 function getItem(
@@ -43,19 +49,33 @@ function getValidLayer(active: Layer) {
   return activeLayer && activeLayer[0].children;
 }
 
-export default function Layout(props: React.PropsWithChildren) {
-  const navigate = useNavigate();
+function handlePage(page: string) {
+  const pagePath = page.split('/');
+  return {
+    currentRoutes: ['', `/${pagePath[1]}/${pagePath[2]}`],
+    active: pagePath[1] as Layer,
+  };
+}
 
+function Layout(props: React.PropsWithChildren) {
+  const currentPage = useLocation().pathname;
+  const navigate = useNavigate();
   const { active, changeActive } = useContext(LayerContext);
-  const [currentRoute, setCurrentRoute] = useState('');
-  const [currentRoutes, setCurrentRoutes] = useState(['']);
+  const [currentRoute, setCurrentRoute] = useState(currentPage);
+  const [currentRoutes, setCurrentRoutes] = useState(() => {
+    const pagePath = currentPage.split('/');
+    return ['', `/${pagePath[1]}/${pagePath[2]}`];
+  });
 
   const changeLayer = useCallback((layer: Layer) => {
-    setCurrentRoute('');
-    setCurrentRoutes(() => ['']);
-    changeActive(layer);
     navigate(`/${layer}`);
   }, []);
+
+  useEffect(() => {
+    setCurrentRoute(currentPage);
+    setCurrentRoutes(() => handlePage(currentPage).currentRoutes);
+    changeActive(handlePage(currentPage).active);
+  }, [currentPage]);
 
   const items =
     useMemo(() => {
@@ -76,15 +96,21 @@ export default function Layout(props: React.PropsWithChildren) {
   return (
     <div className="container">
       <div className="sider">
-        <Logo onClick={() => navigate('/')} imgPath={logos[active]} />
+        <Logo onClick={() => navigate(`${active}`)} imgPath={logos[active]} />
         <Menu
           onClick={handleNavigate}
-          onOpenChange={(e) => setCurrentRoutes(() => [...e])}
+          onOpenChange={(e) => {
+            const latestOpenKey = e.find(
+              (key) => currentRoutes.indexOf(key) === -1,
+            );
+            setCurrentRoutes(() => (latestOpenKey ? [latestOpenKey] : []));
+          }}
           selectedKeys={[currentRoute]}
           openKeys={currentRoutes}
           mode="inline"
           style={{
             minWidth: 0,
+            width: 'inherit',
             fontSize: '16px',
             flex: 'auto',
           }}
@@ -120,3 +146,5 @@ export default function Layout(props: React.PropsWithChildren) {
     </div>
   );
 }
+
+export default React.memo(Layout);

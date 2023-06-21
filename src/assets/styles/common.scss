@@ -1,3 +1,50 @@
+@media screen and (min-width: 375px) {
+  html {
+    font-size: calc(100vw / 375 * 18);
+  }
+}
+
+@media screen and (min-width: 760px) {
+  html {
+    font-size: calc(100vw / 1920 * 18);
+  }
+}
+
+html {
+  --font-sm: 0.875rem;
+  --font-vsm: 0.75rem;
+  --font-nm: 1rem;
+  --font-vnm: 1.1rem;
+  --font-lg: 1.25rem;
+  --font-vlg: 1.5rem;
+  --font-hg: 1.75rem;
+  --font-vhg: 2rem;
+  --font-ex: 2.25rem;
+  --font-vex: 2.5rem;
+  --color-primary: #001529;
+  --color-light: #002445;
+  --color-f-unhover: rgba(255, 255, 255, 0.65);
+  h1 {
+    font-size: var(--font-vex);
+  }
+  h2 {
+    font-size: var(--font-ex);
+  }
+  h3 {
+    font-size: var(--font-vhg);
+  }
+  h4 {
+    font-size: var(--font-hg);
+  }
+  h5 {
+    font-size: var(--font-vlg);
+  }
+  h6,
+  p {
+    font-size: var(--font-lg);
+  }
+}
+
 .demo-container {
   width: 800px;
   height: 600px;
@@ -20,19 +67,6 @@
 
 .bg-b {
   background-color: #1b1a1a;
-}
-
-html {
-  --font-sm: 0.875rem;
-  --font-vsm: 0.75rem;
-  --font-nm: 1rem;
-  --font-vnm: 1.1rem;
-  --font-lg: 1.25rem;
-  --font-vlg: 1.5rem;
-  --font-hg: 1.75rem;
-  --color-primary: #001529;
-  --color-light: #002445;
-  --color-f-unhover: rgba(255, 255, 255, 0.65);
 }
 
 .pos-ab {

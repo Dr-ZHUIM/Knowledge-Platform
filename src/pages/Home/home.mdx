@@ -1,0 +1,103 @@
+# Dr.Zhuim's knowledge platform
+
+Hi! 👋 Welcome to my knowledge platform, here you may find out my demos, snippets or expriences of workflow.
+
+## :rocket: Let's see what can be a demo!
+
+This platform is based on Mdx and Remark libs which means every demo should consist of a .tsx file and a .mdx file.
+
+Such as the demonstration below :
+
+A typical Count demo of React
+
+<CountDemo />
+
+<br />
+
+Here's React-part code:
+
+```js
+import $Mdx from './home.mdx';
+import FadeIN from '@/components/FadeIn/FadeIn';
+import { useState } from 'react';
+
+function CountDemo() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <button onClick={() => setCount((v) => v + 1)}>count++</button>
+      <span style={{ marginLeft: '25px' }}>{count}</span>
+    </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <section>
+      <FadeIN
+        children={
+          <$Mdx
+            components={{
+              CountDemo,
+            }}
+          />
+        }
+      />
+    </section>
+  );
+}
+```
+
+And Here's the Mdx-part code until this line:
+
+````js
+# Dr.Zhuim's knowledge platform
+
+Hi! 👋 Welcome to my knowledge platform, here you may find out my demos, snippets or expriences of workflow.
+
+## :rocket: Let's see what can be a demo!
+
+This platform is based on Mdx and Remark libs which means every demo should consist of a .tsx file and a .mdx file.
+
+Such as the demonstration below :
+
+A typical Count demo of React
+
+<CountDemo />
+
+<br />
+
+Here's React-part code:
+
+```js
+import $Mdx from './home.mdx';
+import FadeIN from '@/components/FadeIn/FadeIn';
+import { useState } from 'react';
+
+function CountDemo() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <button onClick={() => setCount((v) => v + 1)}>count++</button>
+      <span style={{ marginLeft: '25px' }}>{count}</span>
+    </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <section>
+      <FadeIN
+        children={
+          <$Mdx
+            components={{
+              CountDemo,
+            }}
+          />
+        }
+      />
+    </section>
+  );
+}
+```
+````
