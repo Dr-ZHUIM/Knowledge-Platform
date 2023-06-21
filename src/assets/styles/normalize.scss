@@ -1,7 +1,9 @@
 /*
   1. 使用border-box，避免出现意料之外的内容溢出
 */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 /*
@@ -14,7 +16,8 @@
 /*
   3. 提供百分比默认高度
 */
-html, body {
+html,
+body {
   height: 100%;
 }
 /*
@@ -28,19 +31,32 @@ body {
 /*
   6. 提供基本的媒体样式
 */
-img, picture, video, canvas, svg {
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
   max-width: 100%;
 }
 /*
   7. 去除以下元素的内置文字样式
 */
-input, button, textarea, select {
+input,
+button,
+textarea,
+select {
   font: inherit;
 }
 /*
   8. 避免文字溢出
 */
-p, h1, h2, h3, h4, h5, h6 {
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   overflow-wrap: break-word;
 }

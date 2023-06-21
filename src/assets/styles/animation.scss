@@ -10,6 +10,19 @@
   }
 }
 
+@keyframes mount {
+  from {
+    opacity: 0;
+    transform: translateX(-25px);
+  }
+}
+
+@keyframes unmount {
+  to {
+    opacity: 0;
+  }
+}
+
 .animate-type {
   --cn-words: 4;
   --en-words: 4;
@@ -21,4 +34,12 @@
   border-right: 1px solid transparent;
   // type's step = --cn-words * 2 + --en-words
   animation: type 6s steps(12) infinite alternate, caret steps(1) 0.5s infinite;
+}
+
+.mount {
+  animation: mount 0.5s linear;
+}
+
+.unmount {
+  animation: unmount 0.5s linear;
 }

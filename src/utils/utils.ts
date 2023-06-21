@@ -1,14 +1,3 @@
-// export function stringToArrayBuffer(str: string) {
-//   const b = new Blob([str]);
-//   const f = new FileReader();
-//   let u8: Uint8Array;
-//   f.onload = function (e) {
-//     u8 = new Uint8Array(e.target!.result);
-//   };
-//   f.readAsArrayBuffer(b);
-//   return u8;
-// }
-
 export function stringToArrayBuffer2(text: string) {
   const code = encodeURIComponent(text);
   const byte = [];
@@ -34,4 +23,8 @@ export function stringToArrayBuffer(text: string) {
     dv.setUint8(i, byte[i]);
   }
   return buffer;
+}
+
+export function setFontSize(fontSize: number) {
+  document.getElementsByTagName('html')[0].style.fontSize = `${fontSize}px`;
 }

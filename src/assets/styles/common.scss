@@ -3,20 +3,47 @@
   height: 600px;
 }
 
-.flex-container{
-  width: 100%;
+.flex {
+  display: flex;
+}
+
+.flex-col {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
-.flex-c{
+.flex-c {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.bg-b{
+.bg-b {
   background-color: #1b1a1a;
+}
+
+html {
+  --font-sm: 0.875rem;
+  --font-vsm: 0.75rem;
+  --font-nm: 1rem;
+  --font-vnm: 1.1rem;
+  --font-lg: 1.25rem;
+  --font-vlg: 1.5rem;
+  --font-hg: 1.75rem;
+  --color-primary: #001529;
+  --color-light: #002445;
+  --color-f-unhover: rgba(255, 255, 255, 0.65);
+}
+
+.pos-ab {
+  position: absolute;
+}
+
+.pos-re {
+  position: relative;
+}
+
+.pos-0 {
+  top: 0;
+  left: 0;
 }

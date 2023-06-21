@@ -1,58 +1,25 @@
-import React from 'react';
-import { RouteT } from './routes';
+import { Route } from 'react-router-dom';
+import { getlayers } from './getLayers';
 
-export function getRoutes() {
-  return createRoutes();
+// layers' raw data
+export const layers: Record<string, RouteT[] | undefined> = getlayers();
+
+function validateInvalidRoute(route: RouteT) {
+  return !route.label || !route.path;
 }
 
-function createRoutes() {
-  const result: RouteT[] = [];
-  getPages().forEach(([filePath, module]) => {
-    const routeExists = result.find(
-      (route) => route.label === getRouteLabel(filePath),
-    );
-    if (routeExists) {
-      routeExists.children?.push(
-        createChildRoute(getRouteLabel(filePath, true), module),
-      );
-      return;
-    }
-    !checkIsAutoRoute(getRouteLabel(filePath)) &&
-      result.push({
-        path: `/${getRouteLabel(filePath)}`,
-        label: getRouteLabel(filePath),
-        children: [createChildRoute(getRouteLabel(filePath, true), module)],
-      });
-  });
-  return result;
-}
-
-function createChildRoute(routeLabel: string, module: Record<string, any>) {
-  return {
-    path: `/${routeLabel}`,
-    label: module[`label`] || routeLabel,
-    info: '',
-    element: <ModuleToComponent FC={module[`${routeLabel}`]} />,
-  } as RouteT;
-}
-
-function ModuleToComponent({ FC }: { FC: React.FC }) {
+function generateRoutes(route: RouteT) {
+  if (validateInvalidRoute(route)) {
+    console.log(true);
+    return null;
+  }
   return (
-    <>
-      <FC />
-    </>
+    <Route key={route.label} path={route.path} element={route.element}>
+      {route.children && route.children.map((child) => generateRoutes(child))}
+    </Route>
   );
 }
 
-function getPages(): [string, Record<string, any>][] {
-  return Object.entries(import.meta.glob('@/pages/**/*.tsx', { eager: true }));
-}
-
-function getRouteLabel(filePath: string, isChild = false, layer?: number) {
-  const pathArr = filePath.split('/');
-  return isChild ? pathArr[pathArr.length - 2] : pathArr[3];
-}
-
-function checkIsAutoRoute(label: string) {
-  return label.includes('.tsx');
+export function generateRouters(routes: RouteT[]) {
+  return routes.map((route) => generateRoutes(route));
 }

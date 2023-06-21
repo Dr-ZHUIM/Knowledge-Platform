@@ -1,0 +1,15 @@
+.path {
+  animation: path 2s ease-in infinite;
+}
+
+@keyframes path {
+  from {
+    stroke-dasharray: 3390;
+    stroke-dashoffset: 3390;
+  }
+  to {
+    stroke-dasharray: 3390;
+    stroke-dashoffset: 0;
+    fill: #ffffff;
+  }
+}

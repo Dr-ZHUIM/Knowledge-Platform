@@ -5,11 +5,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background:url("https://source.unsplash.com/random") center no-repeat;
+  background: url('https://source.unsplash.com/random') center no-repeat;
   .content {
     width: 600px;
-    height: 300px;
-    border: solid 10px rgba(255,255,255, .4);
+    height: 200px;
+    border: solid 10px rgba(255, 255, 255, 0.4);
     background-color: rgb(245, 245, 238);
     background-clip: padding-box;
   }
