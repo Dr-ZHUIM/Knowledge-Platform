@@ -45,7 +45,7 @@
     justify-content: flex-end;
     align-items: center;
     width: 100%;
-    height: 100px;
+    height: 80px;
     column-gap: 2rem;
     padding-right: 2rem;
     background-color: var(--color-primary);
@@ -88,19 +88,16 @@
 
 .main-container {
   width: inherit;
-  height: 100%;
+  flex: 1;
   overflow-y: scroll;
+  padding: 40px 80px 0 80px;
+  section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
 }
 
-.flex-container {
-  display: flex;
-  flex: 1;
-  height: 100%;
-  padding: 0 80px;
-  justify-content: center;
-  align-items: center;
-  section {
-    width: 100%;
-    height: 100%;
-  }
+.home {
+  position: relative;
 }

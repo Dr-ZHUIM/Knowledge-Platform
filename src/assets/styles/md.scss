@@ -83,3 +83,27 @@ code.hljs {
   color: #ffdcd7;
   background-color: #67060c;
 }
+hr {
+  margin: 1.5em 0;
+  width: 80%;
+  height: 2px !important;
+  opacity: 0.4;
+  background-color: var(--color-primary);
+}
+
+.demo-container {
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  padding: 40px 3rem 30px 3rem;
+  margin: 30px auto;
+  border: var(--color-primary) dashed 2px;
+  &::before {
+    position: absolute;
+    content: 'Demo:';
+    top: 5px;
+    left: 1rem;
+    font-size: var(--font-lg);
+    font-weight: bold;
+  }
+}

@@ -1,0 +1,84 @@
+import Article from '@/components/Article/Article';
+import { useCallback, useState } from 'react';
+import Mdx from './index.mdx';
+import styles from './index.module.scss';
+
+export const label = '防抖与节流';
+
+function _throttle(func: (...args: any[]) => any, delay: number) {
+  let timeout: NodeJS.Timeout | null;
+  return function (this: any, ...args: any[]) {
+    if (!timeout) {
+      timeout = setTimeout(() => {
+        timeout = null;
+        func.apply(this, args);
+      }, delay);
+    }
+  };
+}
+
+function _debounce(func: (...args: any[]) => any, delay: number) {
+  let timeoutId: NodeJS.Timeout | null;
+  return function (this: any, ...args: any[]) {
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+function Debounce() {
+  const [count, setCount] = useState(0);
+  const [clickcount, setClickcount] = useState(0);
+  const handleClick = useCallback(
+    _debounce(() => setCount((v) => v + 1), 500),
+    [],
+  );
+  return (
+    <div className={'demo-container'}>
+      <button
+        className={`${styles.gap} ${styles.button}`}
+        onClick={() => {
+          setClickcount((v) => v + 1);
+          handleClick();
+        }}
+      >
+        Click
+      </button>
+      <span className={styles.gap}>count: {count}</span>
+      <span className={styles.gap}>clickcount: {clickcount}</span>
+    </div>
+  );
+}
+
+function Throttle() {
+  const [count, setCount] = useState(0);
+  const [clickcount, setClickcount] = useState(0);
+  const handleClick = useCallback(
+    _throttle(() => setCount((v) => v + 1), 500),
+    [],
+  );
+  return (
+    <div className={'demo-container'}>
+      <button
+        className={`${styles.gap} ${styles.button}`}
+        onClick={() => {
+          setClickcount((v) => v + 1);
+          handleClick();
+        }}
+      >
+        Click
+      </button>
+      <span className={styles.gap}>count: {count}</span>
+      <span className={styles.gap}>clickcount: {clickcount}</span>
+    </div>
+  );
+}
+
+export default function DebounceAndThrottle() {
+  return (
+    <Article>
+      <Mdx components={{ Debounce, Throttle }} />
+    </Article>
+  );
+}

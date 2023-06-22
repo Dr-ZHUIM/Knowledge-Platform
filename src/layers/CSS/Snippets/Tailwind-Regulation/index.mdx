@@ -1,0 +1,32 @@
+#### Tailwind.config.js
+
+```js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
+
+#### postcss.config.cjs
+
+```js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};
+```
+
+#### tailwind.scss
+
+```scss
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+```

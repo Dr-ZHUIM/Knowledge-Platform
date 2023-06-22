@@ -1,3 +1,4 @@
+import Article from '@/components/Article/Article';
 import { useState } from 'react';
 import styles from './index.module.scss';
 
@@ -16,7 +17,7 @@ export function PrideDayFlagDemo() {
   const [numOfColumns, setNumOfColumns] = useState(200);
   const [staggeredDelay, setStaggeredDelay] = useState(10);
   return (
-    <section id="PrideDayFlagDemo" className={styles.PrideDayFlagDemo}>
+    <Article className={`${styles.PrideDayFlagDemo} flex-center`}>
       <PrideDayFlag
         numOfColumns={numOfColumns}
         staggeredDelay={staggeredDelay}
@@ -53,7 +54,7 @@ export function PrideDayFlagDemo() {
           </label>
         </div>
       </div>
-    </section>
+    </Article>
   );
 }
 

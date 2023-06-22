@@ -1,0 +1,47 @@
+# DebounceAndThrottle
+
+## Debounce
+
+### Scenario-1 TimeTicker
+
+<Debounce />
+
+```js
+function _debounce(func: (...args: any[]) => any, delay: number) {
+  let timeoutId: NodeJS.Timeout | null;
+  return function (this: any, ...args: any[]) {
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+```
+
+---
+
+### Scenario-2 TimeStamp
+
+```js
+
+```
+
+---
+
+## Throttle
+
+<Throttle />
+
+```js
+function _throttle(func: (...args: any[]) => any, delay: number) {
+  let timeout: NodeJS.Timeout | null;
+  return function (this: any, ...args: any[]) {
+    if (!timeout) {
+      timeout = setTimeout(() => {
+        timeout = null;
+        func.apply(this, args);
+      }, delay);
+    }
+  };
+}
+```

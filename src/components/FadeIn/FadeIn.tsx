@@ -10,7 +10,7 @@ function FadeIn({ style, children, className }: MdxType) {
   return (
     <div
       className={className}
-      style={{ paddingBottom: '100px', ...style }}
+      style={{ ...style }}
       ref={(e) => {
         if (e) {
           e.className = `${e.className} mount`;

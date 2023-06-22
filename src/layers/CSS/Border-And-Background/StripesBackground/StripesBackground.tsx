@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import Article from '@/components/Article/Article';
 import styles from './index.module.scss';
 
 export const label = '条纹背景';
 
 export function StripesBackground() {
   return (
-    <section className="demo-container flex-c bg-b">
-      <div className={styles['progress-outer']}>
-        <div className={styles['progress-enter']}>
-          <div className={styles['progress-bg']}></div>
+    <Article className={`flex-center`}>
+      <div className={`${styles.container} bg-b flex flex-center`}>
+        <div className={styles['progress-outer']}>
+          <div className={styles['progress-enter']}>
+            <div className={styles['progress-bg']}></div>
+          </div>
         </div>
       </div>
-    </section>
+    </Article>
   );
 }

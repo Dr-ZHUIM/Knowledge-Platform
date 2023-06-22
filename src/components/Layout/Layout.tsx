@@ -1,6 +1,6 @@
 import { LayerContext } from '@/App';
 import { layers } from '@/routes/getRoutes';
-import { GithubOutlined, UserOutlined } from '@ant-design/icons';
+import { GithubOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
 import { logos } from '@imgs/logos';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
@@ -11,7 +11,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './layout.scss';
 import Logo from './Logo/Logo';
 import SiderIcon from './SiderIcon/SiderIcon';
@@ -123,6 +123,7 @@ function Layout(props: React.PropsWithChildren) {
             icon={<GithubOutlined />}
           />
           <SiderIcon href="http://www.zhuim.fun" icon={<UserOutlined />} />
+          <SiderIcon onClick={() => navigate('/')} icon={<HomeOutlined />} />
         </div>
       </div>
       <section className="right-column flex-col">
@@ -139,9 +140,7 @@ function Layout(props: React.PropsWithChildren) {
             </div>
           ))}
         </header>
-        <main className="main-container">
-          <div className="flex-container">{props.children}</div>
-        </main>
+        <main className="main-container">{props.children}</main>
       </section>
     </div>
   );

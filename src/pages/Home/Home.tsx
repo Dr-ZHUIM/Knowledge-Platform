@@ -1,6 +1,6 @@
 import $Mdx from './home.mdx';
-import FadeIN from '@/components/FadeIn/FadeIn';
 import { useState } from 'react';
+import Article from '@/components/Article/Article';
 
 function CountDemo() {
   const [count, setCount] = useState(0);
@@ -14,16 +14,12 @@ function CountDemo() {
 
 export default function Home() {
   return (
-    <section>
-      <FadeIN
-        children={
-          <$Mdx
-            components={{
-              CountDemo,
-            }}
-          />
-        }
+    <Article>
+      <$Mdx
+        components={{
+          CountDemo,
+        }}
       />
-    </section>
+    </Article>
   );
 }

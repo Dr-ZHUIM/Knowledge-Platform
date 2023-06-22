@@ -1,7 +1,9 @@
+import Article from '@/components/Article/Article';
+
 export default function Home() {
   return (
-    <section>
-      <h1 className="animate-type">HTML-奇淫巧计</h1>
-    </section>
+    <Article className="flex-center h-full">
+      <h1>TypeScript-奇淫巧计</h1>
+    </Article>
   );
 }

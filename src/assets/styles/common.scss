@@ -45,11 +45,6 @@ html {
   }
 }
 
-.demo-container {
-  width: 800px;
-  height: 600px;
-}
-
 .flex {
   display: flex;
 }
@@ -59,14 +54,33 @@ html {
   flex-direction: column;
 }
 
-.flex-c {
-  display: flex;
+.h-full {
+  height: 100%;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.flex-center {
   justify-content: center;
   align-items: center;
 }
 
 .bg-b {
   background-color: #1b1a1a;
+}
+
+.backimg-contain {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.backimg-cover {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .pos-ab {
@@ -80,4 +94,9 @@ html {
 .pos-0 {
   top: 0;
   left: 0;
+}
+
+.margin-col-auto {
+  margin-left: auto;
+  margin-right: auto;
 }
