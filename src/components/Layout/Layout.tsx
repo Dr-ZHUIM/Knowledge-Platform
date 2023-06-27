@@ -94,7 +94,7 @@ function Layout(props: React.PropsWithChildren) {
   };
 
   return (
-    <div className="container">
+    <div className="layout-container">
       <div className="sider">
         <Logo onClick={() => navigate(`${active}`)} imgPath={logos[active]} />
         <Menu

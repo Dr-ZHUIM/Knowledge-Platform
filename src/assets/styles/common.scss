@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @media screen and (min-width: 375px) {
   html {
     font-size: calc(100vw / 375 * 18);
@@ -54,6 +58,10 @@ html {
   flex-direction: column;
 }
 
+.flex-1 {
+  flex: 1;
+}
+
 .h-full {
   height: 100%;
 }
@@ -99,4 +107,8 @@ html {
 .margin-col-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+a {
+  color: #3eaf7c;
 }
