@@ -1,6 +1,7 @@
 import Article from '@/components/Article/Article';
 import Demo from '@/components/Article/public/Demo/Demo';
 import { useCallback, useState } from 'react';
+import { Button } from 'antd';
 import Mdx from './index.mdx';
 import styles from './index.module.scss';
 
@@ -38,7 +39,7 @@ function Debounce() {
   return (
     <Demo>
       <button
-        className={`${styles.gap} ${styles.button}`}
+        className={`btn btn-primary ${styles.gap} ${styles.button}`}
         onClick={() => {
           setClickcount((v) => v + 1);
           handleClick();
@@ -62,7 +63,7 @@ function Throttle() {
   return (
     <Demo>
       <button
-        className={`${styles.gap} ${styles.button}`}
+        className={`btn btn-primary ${styles.gap} ${styles.button}`}
         onClick={() => {
           setClickcount((v) => v + 1);
           handleClick();

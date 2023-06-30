@@ -27,6 +27,10 @@ html {
   --font-vex: 2.5rem;
   --color-primary: #001529;
   --color-light: #002445;
+  --color-success: #116526;
+  --color-success-light: #189437;
+  --color-danger: #ae221d;
+  --color-danger-light: #e3342f;
   --color-f-unhover: rgba(255, 255, 255, 0.65);
   h1 {
     font-size: var(--font-vex);
@@ -111,4 +115,35 @@ html {
 
 a {
   color: #3eaf7c;
+}
+
+.btn {
+  padding: 8px 1rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  transition: 0.5s;
+}
+
+.btn-success {
+  background-color: var(--color-success-light);
+  color: white;
+  &:hover {
+    background-color: var(--color-success);
+  }
+}
+
+.btn-primary {
+  background-color: var(--color-light);
+  color: #fff;
+  &:hover {
+    background-color: var(--color-primary);
+  }
+}
+
+.btn-danger {
+  background-color: var(--color-danger-light);
+  color: #fff;
+  &:hover {
+    background-color: var(--color-danger);
+  }
 }

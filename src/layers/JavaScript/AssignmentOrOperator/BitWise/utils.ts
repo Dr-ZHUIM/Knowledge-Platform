@@ -1,5 +1,5 @@
 import { BitWiseOperator } from './BitWise';
-import { fill } from 'lodash';
+import { fill, chunk, join } from 'lodash';
 
 type State = {
   f_num: number;
@@ -32,6 +32,24 @@ export function bitCalc(action: BitWiseOperator, { f_num, s_num }: State) {
       }
       return '';
     }
+    case '<<': {
+      if (s_num !== undefined){
+        return f_num << s_num;
+      }
+      return '';
+    }
+    case '>>': {
+      if (s_num !== undefined){
+        return f_num >> s_num;
+      }
+      return '';
+    }
+    case '>>>': {
+      if (s_num !== undefined){
+        return f_num >>> s_num;
+      }
+      return '';
+    }
     default:
       throw new Error(`Your action ${action} is Invalid`);
   }
@@ -45,15 +63,19 @@ function CalcBit(num: number, reverse = false) {
   return result;
 }
 
+function chunkBit(arr:number[]){
+  return chunk(arr, 4).reduce((pre,cur,curIndex) => pre + (curIndex > 0 ? " " : "")  + cur.join(""), "");
+}
+
 export function get32Bit(num: number) {
   if (Object.is(num, NaN)) {
-    return fill(Array(32), 0);
+    return chunkBit(fill(Array(32), 0));
   }
-  const result = num >= 0 ? fill(Array(32), 0) : fill(Array(32), 1);
+  const bitArray = num >= 0 ? fill(Array(32), 0) : fill(Array(32), 1);
   let _num = Math.abs(num >= 0 ? Math.floor(num) : Math.round(num) + 1);
   for (let i = 1; _num != 0; i++) {
-    result[result.length - i] = CalcBit(_num, num < 0);
+    bitArray[bitArray.length - i] = CalcBit(_num, num < 0);
     _num = Math.floor(_num / 2);
   }
-  return result;
+  return chunkBit(bitArray);
 }

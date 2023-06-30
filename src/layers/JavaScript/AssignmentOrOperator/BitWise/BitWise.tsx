@@ -11,7 +11,15 @@ import { bitCalc } from './utils';
 
 export const label = '位运算';
 
-export type BitWiseOperator = '&' | '|' | '~' | '^' | '~~';
+export type BitWiseOperator =
+  | '&'
+  | '|'
+  | '~'
+  | '^'
+  | '~~'
+  | '<<'
+  | '>>'
+  | '>>>';
 
 function BitWiseDemo({
   operatorSelf,
