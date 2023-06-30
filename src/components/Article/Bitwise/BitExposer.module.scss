@@ -1,0 +1,12 @@
+.bitExposer {
+  position: relative;
+  color: #c9d1d9;
+  background-color: #0d1117;
+  padding: 1px 1rem;
+  &::after {
+    content: '补码';
+    color: var(--color-primary);
+    position: absolute;
+    inset: -24px 0 0 0;
+  }
+}

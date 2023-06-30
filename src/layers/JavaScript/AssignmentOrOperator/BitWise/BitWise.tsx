@@ -2,6 +2,7 @@ import Article from '@/components/Article/Article';
 import Demo from '@/components/Article/public/Demo/Demo';
 import Input from '@/components/Article/public/Input/Input';
 import MdxResolver from '@/components/Article/public/MdxResolver/MdxResolver';
+import BitExposer from '@/components/Article/Bitwise/BitExposer';
 import { useInput } from '@/utils/hooks';
 import { isUndefinedOrEmptyString } from '@/utils/utils';
 import { useEffect, useState } from 'react';
@@ -61,18 +62,23 @@ function BitWiseDemo({
       <div className="flex justify-between items-center">
         <span className="">自运算</span>
         <span className="">operator: {operatorSelf}</span>
-        <Input
-          type="number"
-          value={group1value1}
-          onChange={handleGroup1Value1}
-          label="输入"
-        />
-        <Input type="text" disabled value={`${result1}`} label="结果" />
+        <div className="flex flex-col gap-[28px] justify-center">
+          <div className="flex items-center">
+            <Input
+              type="number"
+              value={group1value1}
+              onChange={handleGroup1Value1}
+              label="输入"
+            />
+            <BitExposer className="ml-4" num={+group1value1} />
+          </div>
+          <div className="flex items-center">
+            <Input type="text" disabled value={`${result1}`} label="结果" />
+            <BitExposer className="ml-4" num={+result1} />
+          </div>
+        </div>
       </div>
-      <div className="flex flex-col">
-        <div>{get32Bit(+group1value1)}</div>
-        <div>{get32Bit(+result1)}</div>
-      </div>
+
       {!onlySelf && (
         <>
           <div>运算</div>

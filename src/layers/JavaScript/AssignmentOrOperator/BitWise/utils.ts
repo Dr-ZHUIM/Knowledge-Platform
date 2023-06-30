@@ -25,16 +25,23 @@ export function bitCalc(action: BitWiseOperator, { f_num, s_num }: State) {
   }
 }
 
+function CalcBit(num: number, reverse = false) {
+  let result = num % 2;
+  if (reverse) {
+    result = result === 0 ? 1 : 0;
+  }
+  return result;
+}
+
 export function get32Bit(num: number) {
   if (Object.is(num, NaN)) {
     return fill(Array(32), 0);
   }
   const result = num >= 0 ? fill(Array(32), 0) : fill(Array(32), 1);
-  let _num = Math.abs(num);
+  let _num = Math.abs(num >= 0 ? num : num + 1);
   for (let i = 1; _num != 0; i++) {
-    result[result.length - i] = _num % 2;
+    result[result.length - i] = CalcBit(_num, num < 0);
     _num = Math.floor(_num / 2);
   }
-  console.log('result.length', result.length);
   return result;
 }

@@ -1,4 +1,6 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useCallback, useRef } from 'react';
+import styles from './index.module.scss';
+import { CopyOutlined } from '@ant-design/icons';
 
 function Textresolver(text: string) {
   return text;
@@ -102,6 +104,21 @@ function H6({ children }: PropsWithChildren) {
   );
 }
 
+function Pre({ children }: PropsWithChildren) {
+  const divRef = useRef<HTMLDivElement | null>(null);
+  const handleCopy = useCallback(async () => {
+    if (divRef.current) {
+      await navigator.clipboard.writeText(divRef.current.innerText);
+    }
+  }, []);
+  return (
+    <pre className={styles.pre}>
+      <CopyOutlined onClick={handleCopy} className={styles['copy-btn']} />
+      <div ref={divRef}>{children}</div>
+    </pre>
+  );
+}
+
 export default {
   h1: H1,
   h2: H2,
@@ -110,4 +127,5 @@ export default {
   h5: H5,
   h6: H6,
   Anchor: Anchor,
+  pre: Pre,
 };

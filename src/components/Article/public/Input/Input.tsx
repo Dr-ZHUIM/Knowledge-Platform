@@ -10,10 +10,12 @@ function TextOrNumberInput<
   style,
   type = 'text',
   disabled = false,
+  direction = 'vertical',
   color,
 }: {
   label: string;
   value: T;
+  direction?: 'vertical' | 'horizontal';
   type?: 'number' | 'text';
   onChange?: ChangeEventHandler<HTMLInputElement>;
   disabled?: boolean;
@@ -24,10 +26,18 @@ function TextOrNumberInput<
   const id = useId();
   return (
     <div
-      style={{ ...style }}
-      className={`flex flex-col${' ' + className || ''}`}
+      style={{
+        flexDirection: direction === 'vertical' ? 'row' : 'column',
+        ...style,
+      }}
+      className={`flex${(className && ` ${className}`) || ''}`}
     >
-      <label htmlFor={id}>{label}</label>
+      <label
+        className={`${direction === 'vertical' ? 'mr-4' : 'mb-4'}`}
+        htmlFor={id}
+      >
+        {label}
+      </label>
       <input
         id={id}
         className={`px-2 border-solid border-[1px]`}
