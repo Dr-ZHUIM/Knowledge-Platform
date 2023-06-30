@@ -1,0 +1,16 @@
+.demo-container {
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  padding: 40px 3rem 30px 3rem;
+  margin: 30px auto;
+  border: var(--color-primary) dashed 2px;
+  &::before {
+    position: absolute;
+    content: attr(demo-title);
+    top: 5px;
+    left: 1rem;
+    font-size: var(--font-lg);
+    font-weight: bold;
+  }
+}

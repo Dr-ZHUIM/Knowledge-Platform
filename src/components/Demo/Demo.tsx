@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './index.module.scss';
 
 type DemoType = {
   children: React.ReactNode;
@@ -7,7 +8,10 @@ type DemoType = {
 
 export default function Demo({ children, title }: DemoType) {
   return (
-    <div demo-title={`Demo: ${title || ''}`} className="demo-container">
+    <div
+      demo-title={`Demo: ${title || ''}`}
+      className={`${styles['demo-container']}`}
+    >
       {children}
     </div>
   );
