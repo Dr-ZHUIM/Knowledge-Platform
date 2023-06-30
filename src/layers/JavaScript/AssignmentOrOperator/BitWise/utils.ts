@@ -15,10 +15,22 @@ export function bitCalc(action: BitWiseOperator, { f_num, s_num }: State) {
       return ~~f_num;
     }
     case '&': {
-      if (s_num) {
+      if (s_num !== undefined) {
         return f_num & s_num;
       }
-      return null;
+      return '';
+    }
+    case '|': {
+      if (s_num !== undefined){
+        return f_num | s_num;
+      }
+      return '';
+    }
+    case '^': {
+      if (s_num !== undefined){
+        return f_num ^ s_num;
+      }
+      return '';
     }
     default:
       throw new Error(`Your action ${action} is Invalid`);
@@ -38,7 +50,7 @@ export function get32Bit(num: number) {
     return fill(Array(32), 0);
   }
   const result = num >= 0 ? fill(Array(32), 0) : fill(Array(32), 1);
-  let _num = Math.abs(num >= 0 ? num : num + 1);
+  let _num = Math.abs(num >= 0 ? Math.floor(num) : Math.round(num) + 1);
   for (let i = 1; _num != 0; i++) {
     result[result.length - i] = CalcBit(_num, num < 0);
     _num = Math.floor(_num / 2);

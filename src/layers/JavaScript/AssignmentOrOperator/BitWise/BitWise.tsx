@@ -5,7 +5,7 @@ import MdxResolver from '@/components/Article/public/MdxResolver/MdxResolver';
 import BitExposer from '@/components/Article/Bitwise/BitExposer';
 import { useInput } from '@/utils/hooks';
 import { isUndefinedOrEmptyString } from '@/utils/utils';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import Mdx from './index.mdx';
 import { bitCalc } from './utils';
 
@@ -17,11 +17,9 @@ function BitWiseDemo({
   operatorSelf,
   operator,
   title,
-  onlySelf = true,
 }: {
   operatorSelf?: BitWiseOperator;
   operator?: BitWiseOperator;
-  onlySelf: boolean;
   title?: string;
 }) {
   const [group1value1, handleGroup1Value1] = useInput(0);
@@ -59,47 +57,57 @@ function BitWiseDemo({
 
   return (
     <Demo title={title}>
-      <div className="flex justify-between items-center">
-        <span className="">自运算</span>
-        <span className="">operator: {operatorSelf}</span>
-        <div className="flex flex-col gap-[28px] justify-center">
-          <div className="flex items-center">
-            <Input
-              type="number"
-              value={group1value1}
-              onChange={handleGroup1Value1}
-              label="输入"
-            />
-            <BitExposer className="ml-4" num={+group1value1} />
-          </div>
-          <div className="flex items-center">
-            <Input type="text" disabled value={`${result1}`} label="结果" />
-            <BitExposer className="ml-4" num={+result1} />
+      {operatorSelf && (
+        <div className="flex justify-between items-center">
+          <span>自运算</span>
+          <span>operator: {operatorSelf}</span>
+          <div className="flex flex-col gap-[28px] justify-center">
+            <div className="flex items-center">
+              <Input
+                type="number"
+                value={group1value1}
+                onChange={handleGroup1Value1}
+                label="输入"
+              />
+              <BitExposer className="ml-4" num={+group1value1} />
+            </div>
+            <div className="flex items-center">
+              <Input type="text" disabled value={`${result1}`} label="结果" />
+              <BitExposer className="ml-4" num={+result1} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {!onlySelf && (
-        <>
+      {operator && (
+        <div className="flex justify-between items-center">
           <div>运算</div>
-          <input
-            value={group2value1}
-            onChange={handleGroup2Value1}
-            type="text"
-          />
           <span>operator:{operator}</span>
-          <input
-            value={group2value2}
-            onChange={handleGroup2Value2}
-            type="text"
-          />
-          <input
-            disabled
-            readOnly
-            placeholder={`结果为：${result2}`}
-            type="number"
-          />
-        </>
+          <div className="flex flex-col items-end gap-[28px]">
+            <div className="flex items-center">
+              <Input
+                label="操作数1"
+                type="number"
+                value={group2value1}
+                onChange={handleGroup2Value1}
+              />
+              <BitExposer className="ml-4" num={+group2value1} />
+            </div>
+            <div className="flex items-center">
+              <Input
+                label="操作数2"
+                value={group2value2}
+                onChange={handleGroup2Value2}
+                type="number"
+              />
+              <BitExposer className="ml-4" num={+group2value2} />
+            </div>
+            <div className="flex items-center">
+              <Input disabled label="结果" value={`${result2}`} type="text" />
+              <BitExposer className="ml-4" num={+result2} />
+            </div>
+          </div>
+        </div>
       )}
     </Demo>
   );
@@ -108,7 +116,7 @@ function BitWiseDemo({
 export default function BitWise() {
   return (
     <Article>
-      <Mdx components={{ BitWiseDemo, ...MdxResolver }} />
+      <Mdx components={{ BitWiseDemo: memo(BitWiseDemo), ...MdxResolver }} />
     </Article>
   );
 }
