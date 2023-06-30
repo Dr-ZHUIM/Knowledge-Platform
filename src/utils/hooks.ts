@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import _, { initial } from 'lodash';
+import _ from 'lodash';
+import { useCallback, useEffect, useState } from 'react';
 
 export function useResize(fn: () => void, debounceDelay = 200) {
   const callback = _.debounce(fn, debounceDelay);
@@ -20,13 +20,13 @@ export function useHasMounted() {
   return hasMounted;
 }
 
-export function useInput<T>(
-  initialState?: T,
-): [T | undefined, React.ChangeEventHandler<HTMLInputElement>] {
-  const [input, setInput] = useState(initialState);
+export function useInput(
+  initialState?: any,
+): [string, React.ChangeEventHandler<HTMLInputElement>] {
+  const [input, setInput] = useState(`${initialState}` || '');
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setInput(event.target.value as any);
+      setInput(event.target.value);
     },
     [],
   );

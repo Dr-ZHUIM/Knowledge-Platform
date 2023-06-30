@@ -1,4 +1,3 @@
-import { MDXProvider } from '@mdx-js/react';
 import { PropsWithChildren } from 'react';
 
 function Textresolver(text: string) {
@@ -8,12 +7,17 @@ function Textresolver(text: string) {
   // .replace(/[ ]/g, '-');
 }
 
-function getAnchor(node: any) {
+function getAnchor(node: any): string {
   if (typeof node === 'string') {
     return Textresolver(node);
   } else if (typeof node === 'object') {
-    return Textresolver(node[0]);
+    if (node instanceof Array) {
+      return node.reduce((pre, cur) => pre + getAnchor(cur), '');
+    } else if (node.props) {
+      return getAnchor(node.props.children);
+    }
   }
+  throw new Error('node cannot be resolved \nyour node is' + node);
 }
 function Anchor({
   children,
@@ -30,7 +34,7 @@ function Anchor({
   }
   return (
     <span
-      className="text-[#3eaf7c] cursor-pointer"
+      className="text-[#3eaf7c] cursor-pointer mr-2"
       onClick={() => scrollToAnchorById(target)}
     >
       {children}
@@ -41,7 +45,7 @@ function Anchor({
 function H1({ children }: PropsWithChildren) {
   const anchor = getAnchor(children);
   return (
-    <h1 id={anchor}>
+    <h1 className="flex items-center" id={anchor}>
       <Anchor target={anchor}>§</Anchor>
       {children}
     </h1>
@@ -61,7 +65,7 @@ function H2({ children }: PropsWithChildren) {
 function H3({ children }: PropsWithChildren) {
   const anchor = getAnchor(children);
   return (
-    <h3 id={anchor}>
+    <h3 className="flex items-center" id={anchor}>
       <Anchor target={anchor}>§</Anchor>
       {children}
     </h3>
@@ -71,7 +75,7 @@ function H3({ children }: PropsWithChildren) {
 function H4({ children }: PropsWithChildren) {
   const anchor = getAnchor(children);
   return (
-    <h4 id={anchor}>
+    <h4 className="flex items-center" id={anchor}>
       <Anchor target={anchor}>§</Anchor>
       {children}
     </h4>
@@ -81,7 +85,7 @@ function H4({ children }: PropsWithChildren) {
 function H5({ children }: PropsWithChildren) {
   const anchor = getAnchor(children);
   return (
-    <h5 id={anchor}>
+    <h5 className="flex items-center" id={anchor}>
       <Anchor target={anchor}>§</Anchor>
       {children}
     </h5>
@@ -91,7 +95,7 @@ function H5({ children }: PropsWithChildren) {
 function H6({ children }: PropsWithChildren) {
   const anchor = getAnchor(children);
   return (
-    <h6 id={anchor}>
+    <h6 className="flex items-center" id={anchor}>
       <Anchor target={anchor}>§</Anchor>
       {children}
     </h6>

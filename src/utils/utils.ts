@@ -28,3 +28,10 @@ export function stringToArrayBuffer(text: string) {
 export function setFontSize(fontSize: number) {
   document.getElementsByTagName('html')[0].style.fontSize = `${fontSize}px`;
 }
+
+export function isUndefinedOrEmptyString(value: string) {
+  if (value === undefined || value.length === 0) {
+    return true;
+  }
+  return false;
+}

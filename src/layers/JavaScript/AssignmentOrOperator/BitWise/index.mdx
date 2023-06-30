@@ -14,6 +14,32 @@ JS 储存 Number 类型数据采用的是双精度储存(64 位)。
 
 ### 1.按位与 `&`
 
+按位与 `&` 会将两个操作数的二进制补码进行对齐操作
+
+> 即 同一位的值都为 1 或者都为 0 时,这一位为 1; 同一位的值不相同时,这一位为 0
+
+举个例子 `5 & 10`
+
+```js
+// 5
+// 0000 0000 0000 0000 0000 0000 0000 0101
+
+// 10
+// 0000 0000 0000 0000 0000 0000 0000 1010
+
+// 5 & 10
+
+// 0000 0000 0000 0000 0000 0000 0000 0101
+// YYYY YYYY YYYY YYYY YYYY YYYY YYYY NNNN
+// 0000 0000 0000 0000 0000 0000 0000 1010
+
+// |
+// V
+
+// 0
+// 1111 1111 1111 1111 1111 1111 1111 0000
+```
+
 ---
 
 ### 2.按位或 `|`
@@ -26,7 +52,7 @@ JS 储存 Number 类型数据采用的是双精度储存(64 位)。
 
 ### 4.按位非 `~`
 
-按位非`~`会将二进制**补码**数据的每一位进行取反操作
+按位非 `~` 会将二进制补码数据的每一位进行取反操作
 
 > 即 0 -> 1; 1 -> 0
 
@@ -42,19 +68,13 @@ JS 储存 Number 类型数据采用的是双精度储存(64 位)。
 
 根据知识前提，我们知道负数的补码为自身的反码 + 1,也就是说对数字 n 进行补码取反意味着返回 - n - 1
 
-<BitWiseDemo title="按位非取反" operator="~" />
+<BitWiseDemo title="按位非取反" operatorSelf="~" />
 
 #### 应用场景
 
-1. 向下取整
+##### **1. 向下取整**
 
-该场景只支持 `n >= 0` 的数
-
-正如我们在<Anchor target="知识前提">知识前提</Anchor>所提到的：
-
-> 位运算时会先将数据转为 32 位二进制整数
-
-<BitWiseDemo title="按位非向下取整" operator="~" />
+**前提 :** 位运算时会先将数据转为 32 位二进制整数
 
 那么我们连续对数字 `n` 执行两次按位非操作的过程就是
 
@@ -64,6 +84,62 @@ JS 储存 Number 类型数据采用的是双精度储存(64 位)。
 // 2. 按位非 ---> - n - 1
 
 // 3. 第二次按位非 ---> - (- n - 1) - 1 --> n + 1 - 1 ---> n  ---> 获得整数n
+```
+
+这样的过程在 `n >= 0` 的情况下与 `Math.floor(n)` 相当, 在 `n <= 0` 的情况下与 `Math.round(n)` 相当
+
+<BitWiseDemo title="按位非向下取整" operatorSelf="~~" />
+
+---
+
+##### **2. indexOf 场景**
+
+**前提 1:** String.prototype.indexOf 方法会根据字符串中某个字符的存在情况而返回 `-1` 或者 一个 索引值。
+
+> Array.prototype.indexOf 方法则是根据数组中某个元素的存在情况而返回 `-1` 或者 一个 索引值。
+
+**前提 2:** `Boolean(-1) === true` , `Boolean(0) === false`。
+
+**前提 3:** `~n = - n - 1`。
+
+**结论 :**
+
+在字符**存在**于字符串中的情况下即 `index >= 0` 时， `~index <= -1`; 而字符**不存在**的情况下即 `index === -1`时， `~index = 0`;
+
+根据我们的前提 2，我们可以将 `~index` 作为布尔值来构建条件式, 即
+
+```js
+if (~index) {
+  // your condition here ...
+}
+```
+
+现在我们来看以下的案例：
+
+```js
+const str = "I'm a string here!";
+const strIndex = str.indexOf('string');
+
+// Yeah! We find the string! It's index is 6!
+if (strIndex >= 0) {
+  console.log(`Yeah! We find the string! It's index is ${strIndex}!`);
+} else {
+  console.log('No string was found!');
+}
+```
+
+这是一个经典的使用 indexOf 的案例,通过 `indexOf` 的返回值是否大于等于 0 来构建条件式。我们可以根据结论来进行改造：
+
+```js
+const str = "I'm a string here!";
+const strIndex = str.indexOf('string');
+
+// Yeah! We find the string! It's index is 6!
+if (~strIndex) {
+  console.log(`Yeah! We find the string! It's index is ${strIndex}!`);
+} else {
+  console.log('No string was found!');
+}
 ```
 
 ---
