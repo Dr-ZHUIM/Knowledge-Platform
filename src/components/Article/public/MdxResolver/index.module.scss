@@ -5,7 +5,7 @@
     color: #c9d1d9;
     right: 1rem;
     top: 10px;
-    font-size: 12px;
+    font-size: var(--font-lg);
     transition: 0.5s;
     &:hover {
       color: rgb(116, 116, 116);

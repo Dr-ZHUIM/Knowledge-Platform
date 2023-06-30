@@ -1,4 +1,5 @@
 import Article from '@/components/Article/Article';
+import Demo from '@/components/Article/public/Demo/Demo';
 import { useCallback, useState } from 'react';
 import Mdx from './index.mdx';
 import styles from './index.module.scss';
@@ -35,7 +36,7 @@ function Debounce() {
     [],
   );
   return (
-    <div className={'demo-container'}>
+    <Demo>
       <button
         className={`${styles.gap} ${styles.button}`}
         onClick={() => {
@@ -47,7 +48,7 @@ function Debounce() {
       </button>
       <span className={styles.gap}>count: {count}</span>
       <span className={styles.gap}>clickcount: {clickcount}</span>
-    </div>
+    </Demo>
   );
 }
 
@@ -59,7 +60,7 @@ function Throttle() {
     [],
   );
   return (
-    <div className={'demo-container'}>
+    <Demo>
       <button
         className={`${styles.gap} ${styles.button}`}
         onClick={() => {
@@ -71,7 +72,7 @@ function Throttle() {
       </button>
       <span className={styles.gap}>count: {count}</span>
       <span className={styles.gap}>clickcount: {clickcount}</span>
-    </div>
+    </Demo>
   );
 }
 
