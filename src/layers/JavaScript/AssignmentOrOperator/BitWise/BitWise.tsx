@@ -7,7 +7,7 @@ import { useInput } from '@/utils/hooks';
 import { isUndefinedOrEmptyString } from '@/utils/utils';
 import { useEffect, useState } from 'react';
 import Mdx from './index.mdx';
-import { bitCalc, get32Bit } from './utils';
+import { bitCalc } from './utils';
 
 export const label = '位运算';
 
