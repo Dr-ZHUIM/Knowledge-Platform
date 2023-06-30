@@ -1,5 +1,5 @@
 import React from 'react';
-import FadeIn from '../FadeIn/FadeIn';
+import FadeIn from './public/FadeIn/FadeIn';
 
 type ArticleType = {
   style?: React.CSSProperties;

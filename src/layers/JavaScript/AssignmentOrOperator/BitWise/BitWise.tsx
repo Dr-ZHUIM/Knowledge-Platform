@@ -1,7 +1,7 @@
 import Article from '@/components/Article/Article';
-import Demo from '@/components/Demo/Demo';
-import Input from '@/components/Input/Input';
-import MdxResolver from '@/components/MdxResolver/MdxResolver';
+import Demo from '@/components/Article/public/Demo/Demo';
+import Input from '@/components/Article/public/Input/Input';
+import MdxResolver from '@/components/Article/public/MdxResolver/MdxResolver';
 import { useInput } from '@/utils/hooks';
 import { isUndefinedOrEmptyString } from '@/utils/utils';
 import { useEffect, useState } from 'react';

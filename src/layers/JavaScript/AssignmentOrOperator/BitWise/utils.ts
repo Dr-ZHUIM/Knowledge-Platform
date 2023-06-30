@@ -26,13 +26,15 @@ export function bitCalc(action: BitWiseOperator, { f_num, s_num }: State) {
 }
 
 export function get32Bit(num: number) {
-  console.log('num', num);
+  if (Object.is(num, NaN)) {
+    return fill(Array(32), 0);
+  }
   const result = num >= 0 ? fill(Array(32), 0) : fill(Array(32), 1);
-  const _num = Math.abs(num);
-  return _num;
-  // for (let i = 1; _num != 0; i++) {
-  //   result[result.length - i] = _num % 2;
-  //   _num = Math.floor(_num / 2);
-  // }
-  // return result;
+  let _num = Math.abs(num);
+  for (let i = 1; _num != 0; i++) {
+    result[result.length - i] = _num % 2;
+    _num = Math.floor(_num / 2);
+  }
+  console.log('result.length', result.length);
+  return result;
 }
