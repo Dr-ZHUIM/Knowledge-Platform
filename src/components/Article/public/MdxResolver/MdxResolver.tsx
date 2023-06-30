@@ -1,6 +1,7 @@
-import { PropsWithChildren, useCallback, useRef } from 'react';
+import { PropsWithChildren, useCallback, useRef, useContext } from 'react';
 import styles from './index.module.scss';
 import { CopyOutlined } from '@ant-design/icons';
+import { MessageContext } from '@/components/Layout/Layout';
 
 function Textresolver(text: string) {
   return text;
@@ -105,10 +106,17 @@ function H6({ children }: PropsWithChildren) {
 }
 
 function Pre({ children }: PropsWithChildren) {
+  const { openMessage } = useContext(MessageContext);
   const divRef = useRef<HTMLDivElement | null>(null);
   const handleCopy = useCallback(async () => {
     if (divRef.current) {
-      await navigator.clipboard.writeText(divRef.current.innerText);
+      navigator.clipboard.writeText(divRef.current.innerText).then(() => {
+        openMessage({
+          description: '复制成功!',
+          message: '文本已加入粘贴板',
+          state: 'success',
+        });
+      });
     }
   }, []);
   return (

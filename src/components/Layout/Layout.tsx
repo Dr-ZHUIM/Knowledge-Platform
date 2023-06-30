@@ -1,10 +1,6 @@
-import { LayerContext } from '@/App';
-import { layers } from '@/routes/getRoutes';
-import { GithubOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
-import { logos } from '@imgs/logos';
-import type { MenuProps } from 'antd';
-import { Menu } from 'antd';
+// libs import
 import React, {
+  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -12,54 +8,38 @@ import React, {
   useState,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import type { MenuProps } from 'antd';
+import { Menu, notification } from 'antd';
+import { GithubOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
+// routers import
+import { layers } from '@/routes/getRoutes';
+// context import
+import { LayerContext } from '@/App';
+// img import
+import { logos } from '@imgs/logos';
+// utils import
+import { getItem, getValidLayer, handlePage } from './utils';
+// css modules import
 import './layout.scss';
 import Logo from './Logo/Logo';
 import SiderIcon from './SiderIcon/SiderIcon';
 
-type MenuItem = Required<MenuProps>['items'][number];
-function getItem(
-  label: React.ReactNode,
-  path: React.Key,
-  children?: RouteT[],
-  type?: 'group',
-): MenuItem {
-  if (children && children.length > 0) {
-    const childrenItem = children.map((child) =>
-      getItem(child.label, child.path, child.children),
-    );
-    return {
-      key: path,
-      children: childrenItem,
-      label,
-      title: label,
-      type,
-    } as MenuItem;
-  }
-  return {
-    key: path,
-    children,
-    label,
-    title: label,
-    type,
-  } as MenuItem;
-}
+type Message = {
+  message: React.ReactElement | string;
+  description: React.ReactElement | string;
+  state?: 'info' | 'success' | 'error';
+};
 
-function getValidLayer(active: Layer) {
-  const activeLayer = layers[active];
-  return activeLayer && activeLayer[0].children;
-}
-
-function handlePage(page: string) {
-  const pagePath = page.split('/');
-  return {
-    currentRoutes: ['', `/${pagePath[1]}/${pagePath[2]}`],
-    active: pagePath[1] as Layer,
-  };
-}
+export const MessageContext = createContext({
+  openMessage: ({ message, description }: Message) => {
+    console.log(message, description);
+  },
+});
 
 function Layout(props: React.PropsWithChildren) {
+  const [api, contextHolder] = notification.useNotification();
+  // resolve route problems
   const currentPage = useLocation().pathname;
-  const navigate = useNavigate();
   const { active, changeActive } = useContext(LayerContext);
   const [currentRoute, setCurrentRoute] = useState(currentPage);
   const [currentRoutes, setCurrentRoutes] = useState(() => {
@@ -67,8 +47,26 @@ function Layout(props: React.PropsWithChildren) {
     return ['', `/${pagePath[1]}/${pagePath[2]}`];
   });
 
+  const navigate = useNavigate();
   const changeLayer = useCallback((layer: Layer) => {
     navigate(`/${layer}`);
+  }, []);
+  const openMessage = useCallback((messageOptions: Message) => {
+    const _messageOptions = { ...messageOptions, duration: 2 };
+    switch (_messageOptions.state) {
+      case 'success': {
+        api.success(_messageOptions);
+        break;
+      }
+      case 'error': {
+        api.error(_messageOptions);
+        break;
+      }
+      default: {
+        api.info(_messageOptions);
+        break;
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -94,55 +92,59 @@ function Layout(props: React.PropsWithChildren) {
   };
 
   return (
-    <div className="layout-container">
-      <div className="sider">
-        <Logo onClick={() => navigate(`${active}`)} imgPath={logos[active]} />
-        <Menu
-          onClick={handleNavigate}
-          onOpenChange={(e) => {
-            const latestOpenKey = e.find(
-              (key) => currentRoutes.indexOf(key) === -1,
-            );
-            setCurrentRoutes(() => (latestOpenKey ? [latestOpenKey] : []));
-          }}
-          selectedKeys={[currentRoute]}
-          openKeys={currentRoutes}
-          mode="inline"
-          style={{
-            minWidth: 0,
-            width: 'inherit',
-            fontSize: '16px',
-            flex: 'auto',
-          }}
-          theme="dark"
-          items={items}
-        />
-        <div className="sider-footer">
-          <SiderIcon
-            href="https://github.com/Dr-ZHUIM"
-            icon={<GithubOutlined />}
+    <MessageContext.Provider value={{ openMessage }}>
+      {contextHolder}
+      <div className="layout-container">
+        <div className="sider">
+          <Logo onClick={() => navigate(`${active}`)} imgPath={logos[active]} />
+          <Menu
+            onClick={handleNavigate}
+            onOpenChange={(e) => {
+              const latestOpenKey = e.find(
+                (key) => currentRoutes.indexOf(key) === -1,
+              );
+              setCurrentRoutes(() => (latestOpenKey ? [latestOpenKey] : []));
+            }}
+            selectedKeys={[currentRoute]}
+            openKeys={currentRoutes}
+            mode="inline"
+            style={{
+              minWidth: 0,
+              width: 'inherit',
+              fontSize: '16px',
+              flex: 'auto',
+            }}
+            theme="dark"
+            items={items}
           />
-          <SiderIcon href="http://www.zhuim.fun" icon={<UserOutlined />} />
-          <SiderIcon onClick={() => navigate('/')} icon={<HomeOutlined />} />
+          <div className="sider-footer">
+            <SiderIcon
+              href="https://github.com/Dr-ZHUIM"
+              icon={<GithubOutlined />}
+            />
+            <SiderIcon href="http://www.zhuim.fun" icon={<UserOutlined />} />
+            <SiderIcon onClick={() => navigate('/')} icon={<HomeOutlined />} />
+          </div>
         </div>
+        <section className="right-column flex-col">
+          <header className="flex navbar">
+            {Object.keys(layers).map((key) => (
+              <div
+                onClick={() => changeLayer(key as Layer)}
+                key={key}
+                className={
+                  `navbar-item pos-re` +
+                  `${key === active ? ' active-nav' : ''}`
+                }
+              >
+                {key}
+              </div>
+            ))}
+          </header>
+          <main className="main-container">{props.children}</main>
+        </section>
       </div>
-      <section className="right-column flex-col">
-        <header className="flex navbar">
-          {Object.keys(layers).map((key) => (
-            <div
-              onClick={() => changeLayer(key as Layer)}
-              key={key}
-              className={
-                `navbar-item pos-re` + `${key === active ? ' active-nav' : ''}`
-              }
-            >
-              {key}
-            </div>
-          ))}
-        </header>
-        <main className="main-container">{props.children}</main>
-      </section>
-    </div>
+    </MessageContext.Provider>
   );
 }
 
