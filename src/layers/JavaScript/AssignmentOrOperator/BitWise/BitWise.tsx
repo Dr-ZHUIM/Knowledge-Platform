@@ -124,7 +124,10 @@ function BitWiseDemo({
 export default function BitWise() {
   return (
     <Article>
-      <Mdx components={{ BitWiseDemo: memo(BitWiseDemo), ...MdxResolver }} />
+      <MdxResolver
+        Children={Mdx}
+        components={{ BitWiseDemo: memo(BitWiseDemo) }}
+      ></MdxResolver>
     </Article>
   );
 }

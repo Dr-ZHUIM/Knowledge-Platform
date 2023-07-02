@@ -6,3 +6,5 @@ declare type RouteT = {
 };
 
 declare type Layer = 'HTML' | 'CSS' | 'JavaScript' | 'TypeScript' | 'HOME';
+
+declare type TOC = Record<string, any>;

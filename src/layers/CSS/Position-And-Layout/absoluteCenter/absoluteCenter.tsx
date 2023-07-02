@@ -47,7 +47,7 @@ function CenterDemo({
 export default function absoluteCenter() {
   return (
     <Article>
-      <Mdx components={{ ...MdxResolver, CenterDemo }} />
+      <MdxResolver TC={Mdx} components={{ CenterDemo }} />
     </Article>
   );
 }

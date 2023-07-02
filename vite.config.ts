@@ -5,6 +5,7 @@ import remarkEmoji from 'remark-emoji';
 import { builtinModules } from 'module';
 import remarkGFM from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
+import remarkToc from 'remark-toc';
 import path from 'path';
 
 // https://vitejs.dev/config/
@@ -22,7 +23,7 @@ export default defineConfig({
      *    ```
      */
     mdx({
-      remarkPlugins: [remarkGFM, remarkEmoji],
+      remarkPlugins: [remarkGFM, remarkEmoji, remarkToc],
       rehypePlugins: [rehypeHighlight],
     }),
   ],

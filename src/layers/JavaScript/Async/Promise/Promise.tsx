@@ -7,7 +7,7 @@ export const label = 'Promise';
 export default function Promise() {
   return (
     <Article>
-      <Mdx components={{ ...MdxResolver }} />
+      <MdxResolver TC={Mdx} />
     </Article>
   );
 }

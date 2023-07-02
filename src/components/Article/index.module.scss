@@ -1,0 +1,28 @@
+.article {
+  ul {
+    padding-left: 0.85em;
+    li {
+      list-style: disc;
+      ul {
+        li {
+          list-style: circle;
+          ul {
+            li {
+              list-style: disc;
+              ul {
+                li {
+                  list-style: circle;
+                  ul {
+                    li {
+                      list-style: disc;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

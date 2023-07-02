@@ -2,6 +2,33 @@ import styles from './index.module.scss';
 
 # 居中问题
 
+本文主要讨论一个 CSS 经久不衰的问题: :confused:如何实现一个子级元素在父级元素同时满足水平居中与垂直居中呢？
+
+这个问题有多个拓展的空间，这里我将分情况进行解答：
+
+- 子级属于行内元素时：
+- 子级元素属于块级元素时：
+  - 子级宽高固定
+  - 子级宽高不固定
+
+## 知识前提
+
+### 1. 块级内容 || 行级内容
+
+块级内容根据父级属性`writing-mode` 决定布局方式，在默认情况下，块级内容占据整个父级元素的水平空间，该空间不会因块级内容被设置宽度而被改变。
+
+> 当 `writing-mode` 为 `vertical-[xxx]` 的时候，块级内容占据整个父级元素的垂直空间
+
+### 2. margin
+
+### 3. 文档流 与 BFC
+
+### 4. transform 与 animation 的互相影响
+
+## 兼容方案
+
+## 父级，子级宽高固定
+
 ### 1. 父级 flex 方案
 
 <CenterDemo parentClassName={styles['flex-scenario']} />

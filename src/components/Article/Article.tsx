@@ -1,5 +1,7 @@
+import { handleClassName } from '@/utils/utils';
 import React from 'react';
 import FadeIn from './public/FadeIn/FadeIn';
+import styles from './index.module.scss';
 
 type ArticleType = {
   style?: React.CSSProperties;
@@ -9,7 +11,10 @@ type ArticleType = {
 
 export default function Article({ children, className, style }: ArticleType) {
   return (
-    <section className={className} style={{ ...style }}>
+    <section
+      className={`${styles.article}${handleClassName(className)}`}
+      style={{ ...style }}
+    >
       <FadeIn>{children}</FadeIn>
     </section>
   );

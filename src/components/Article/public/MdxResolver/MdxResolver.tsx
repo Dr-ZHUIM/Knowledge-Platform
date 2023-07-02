@@ -1,9 +1,18 @@
-import { PropsWithChildren, useCallback, useRef, useContext } from 'react';
+import {
+  PropsWithChildren,
+  useCallback,
+  useRef,
+  useContext,
+  useEffect,
+} from 'react';
 import styles from './index.module.scss';
 import { CopyOutlined } from '@ant-design/icons';
 import { MessageContext } from '@/components/Layout/Layout';
+import { MDXComponents } from 'mdx/types';
+import { MergeComponents } from '@mdx-js/react/lib';
+import { useHasMounted } from '@/utils/hooks';
 
-function Textresolver(text: string) {
+function TextResolver(text: string) {
   return text;
   // .toLowerCase()
   // .replace(/[^a-z0-9 ]/g, '')
@@ -12,7 +21,7 @@ function Textresolver(text: string) {
 
 function getAnchor(node: any): string {
   if (typeof node === 'string') {
-    return Textresolver(node);
+    return TextResolver(node);
   } else if (typeof node === 'object') {
     if (node instanceof Array) {
       return node.reduce((pre, cur) => pre + getAnchor(cur), '');
@@ -127,13 +136,35 @@ function Pre({ children }: PropsWithChildren) {
   );
 }
 
-export default {
-  h1: H1,
-  h2: H2,
-  h3: H3,
-  h4: H4,
-  h5: H5,
-  h6: H6,
-  Anchor: Anchor,
-  pre: Pre,
-};
+export default function MdxResolver({
+  TC,
+  components,
+}: {
+  components?: MDXComponents | MergeComponents | null | undefined;
+  TC: (...args: any[]) => React.ReactElement;
+}) {
+  const hasMounted = useHasMounted();
+  const getContentRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const content = getContentRef.current;
+    console.log('content', content?.innerHTML);
+  }, [hasMounted]);
+  return (
+    <div ref={getContentRef}>
+      <TC
+        components={{
+          h1: H1,
+          h2: H2,
+          h3: H3,
+          h4: H4,
+          h5: H5,
+          h6: H6,
+          a: Anchor,
+          Anchor: Anchor,
+          pre: Pre,
+          ...components,
+        }}
+      />
+    </div>
+  );
+}
