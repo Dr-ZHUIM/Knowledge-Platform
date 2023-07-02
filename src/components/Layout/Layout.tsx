@@ -1,16 +1,15 @@
 // libs import
+import { GithubOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
+import type { MenuProps } from 'antd';
+import { Menu, notification } from 'antd';
 import React, {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import type { MenuProps } from 'antd';
-import { Menu, notification } from 'antd';
-import { GithubOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
 // routers import
 import { layers } from '@/routes/getRoutes';
 // context import
@@ -48,10 +47,10 @@ function Layout(props: React.PropsWithChildren) {
   });
 
   const navigate = useNavigate();
-  const changeLayer = useCallback((layer: Layer) => {
+  const changeLayer = (layer: Layer) => {
     navigate(`/${layer}`);
-  }, []);
-  const openMessage = useCallback((messageOptions: Message) => {
+  };
+  const openMessage = (messageOptions: Message) => {
     const _messageOptions = { ...messageOptions, duration: 2 };
     switch (_messageOptions.state) {
       case 'success': {
@@ -67,7 +66,7 @@ function Layout(props: React.PropsWithChildren) {
         break;
       }
     }
-  }, []);
+  };
 
   useEffect(() => {
     setCurrentRoute(currentPage);
@@ -85,8 +84,6 @@ function Layout(props: React.PropsWithChildren) {
     }, [active]) || [];
 
   const handleNavigate: MenuProps['onClick'] = (info) => {
-    const target = info.domEvent.target as any;
-    document.title = target.innerHTML;
     setCurrentRoute(info.key);
     navigate(info.key);
   };

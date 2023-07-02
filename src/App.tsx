@@ -10,7 +10,7 @@ import ErrorPage from './pages/Error/404';
 import Home from './pages/Home/Home';
 // utils functions import
 import { useResize } from '@/utils/hooks';
-import { setFontSize } from '@/utils/utils';
+import { setFontSize } from '@/utils/eventHandler';
 //  css modules import
 import '@styles/animation.scss';
 import '@styles/common.scss';

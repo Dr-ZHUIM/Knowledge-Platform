@@ -14,12 +14,16 @@ function createChildRoute(
     label: module[`label`] || routeLabel,
     info: '',
     element: (
-      <ModuleToComponent FC={module[`${routeLabel}`] || module[`default`]} />
+      <ModuleToComponent
+        title={module[`label`] || routeLabel}
+        FC={module[`${routeLabel}`] || module[`default`]}
+      />
     ),
   } as RouteT;
 }
 
-function ModuleToComponent({ FC }: { FC: React.FC }) {
+function ModuleToComponent({ FC, title }: { FC: React.FC; title: string }) {
+  document.title = title;
   return (
     <>
       <FC />
@@ -84,6 +88,7 @@ function createLayers() {
         label: 'HOME',
         element: (
           <ModuleToComponent
+            title={`${layerLabel}-HOME`}
             FC={module[`${layerLabel}`] || module[`default`]}
           />
         ),

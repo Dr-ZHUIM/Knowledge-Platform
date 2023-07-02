@@ -1,0 +1,26 @@
+.flex-scenario {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.margin-scenario {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
+
+.transform-scenario {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.fit-content-scenario {
+  position: absolute;
+  width: fit-content;
+  height: fit-content;
+  inset: 0;
+  margin: auto;
+}

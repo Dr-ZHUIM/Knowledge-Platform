@@ -15,7 +15,7 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/triple-slash-reference': 3,
+    '@typescript-eslint/triple-slash-reference': 0,
     'max-params': 0,
     'accessor-pairs': 2,
     'arrow-spacing': [

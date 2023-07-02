@@ -1,0 +1,25 @@
+import styles from './index.module.scss';
+
+# 居中问题
+
+### 1. 父级 flex 方案
+
+<CenterDemo parentClassName={styles['flex-scenario']} />
+
+### 2. 子级 margin 方案
+
+<CenterDemo childClassName={styles['margin-scenario']} />
+
+### 2. 子级 transform 方案
+
+<CenterDemo
+  WAndHIsKonwn={false}
+  childClassName={styles['transform-scenario']}
+/>
+
+### 3. 子级 fit-content 方案
+
+<CenterDemo
+  WAndHIsKonwn={false}
+  childClassName={styles['fit-content-scenario']}
+/>
