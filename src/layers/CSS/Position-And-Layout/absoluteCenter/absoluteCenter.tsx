@@ -1,8 +1,11 @@
 import Article from '@/components/Article/Article';
-import MdxResolver from '@/components/Article/public/MdxResolver/MdxResolver';
-import Mdx from './index.mdx';
+import CSSDemo from '@/components/Article/public/CSSDemo/CSSDemo';
 import Demo from '@/components/Article/public/Demo/Demo';
+import MdxResolver from '@/components/Article/public/MdxResolver/MdxResolver';
 import { handleClassName } from '@/utils/utils';
+import { useRef } from 'react';
+import Mdx from './index.mdx';
+import { displayOptions } from './options';
 
 export const label = '居中';
 
@@ -44,10 +47,32 @@ function CenterDemo({
   );
 }
 
+function DisplayDemo() {
+  const divRef = useRef<HTMLDivElement | null>(null);
+  return (
+    <CSSDemo options={displayOptions} ControlledElement={divRef.current}>
+      <div>
+        <div className="w-[50%] bg-[var(--color-light)] block h-[100px] border-solid border-[1px] border-[#000]">
+          div1
+        </div>
+        <div
+          className="w-[50%] bg-[var(--color-success-light)] h-[100px] border-solid border-[1px] border-[#000]"
+          ref={divRef}
+        >
+          div2
+        </div>
+        <div className="w-[50%] bg-[var(--color-light)] block h-[100px] border-solid border-[1px] border-[#000]">
+          div3
+        </div>
+      </div>
+    </CSSDemo>
+  );
+}
+
 export default function absoluteCenter() {
   return (
     <Article>
-      <MdxResolver TC={Mdx} components={{ CenterDemo }} />
+      <MdxResolver TC={Mdx} components={{ CenterDemo, DisplayDemo }} />
     </Article>
   );
 }

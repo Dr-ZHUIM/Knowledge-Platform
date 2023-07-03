@@ -11,6 +11,8 @@ import { MessageContext } from '@/components/Layout/Layout';
 import { MDXComponents } from 'mdx/types';
 import { MergeComponents } from '@mdx-js/react/lib';
 import { useHasMounted } from '@/utils/hooks';
+import { Image } from 'antd';
+import { CompositionImage, ImageProps } from 'antd/es/image';
 
 function TextResolver(text: string) {
   return text;
@@ -20,8 +22,8 @@ function TextResolver(text: string) {
 }
 
 function getAnchor(node: any): string {
-  if (typeof node === 'string') {
-    return TextResolver(node);
+  if (typeof node !== 'object') {
+    return TextResolver(`${node}`);
   } else if (typeof node === 'object') {
     if (node instanceof Array) {
       return node.reduce((pre, cur) => pre + getAnchor(cur), '');
@@ -29,7 +31,7 @@ function getAnchor(node: any): string {
       return getAnchor(node.props.children);
     }
   }
-  throw new Error('node cannot be resolved \nyour node is' + node);
+  throw new Error('node cannot be resolved \nyour node is ' + node);
 }
 function Anchor({
   children,
@@ -136,6 +138,14 @@ function Pre({ children }: PropsWithChildren) {
   );
 }
 
+function Mark({ children }: PropsWithChildren) {
+  return <mark className={styles.mark}>{children}</mark>;
+}
+
+function MarkImage(props: CompositionImage<ImageProps>) {
+  return <Image className="block" {...props} />;
+}
+
 export default function MdxResolver({
   TC,
   components,
@@ -147,7 +157,6 @@ export default function MdxResolver({
   const getContentRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const content = getContentRef.current;
-    console.log('content', content?.innerHTML);
   }, [hasMounted]);
   return (
     <div ref={getContentRef}>
@@ -162,6 +171,8 @@ export default function MdxResolver({
           a: Anchor,
           Anchor: Anchor,
           pre: Pre,
+          Image: MarkImage,
+          Mark,
           ...components,
         }}
       />

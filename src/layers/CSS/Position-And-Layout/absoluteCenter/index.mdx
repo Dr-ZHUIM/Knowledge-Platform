@@ -1,4 +1,5 @@
 import styles from './index.module.scss';
+import blockShaft from '@imgs/article/CSS/block_shaft.png';
 
 # 居中问题
 
@@ -15,13 +16,29 @@ import styles from './index.module.scss';
 
 ### 1. 块级内容 || 行级内容
 
+`display: block` 决定一个元素为块级内容
+
 块级内容根据父级属性`writing-mode` 决定布局方式，在默认情况下，块级内容占据整个父级元素的水平空间，该空间不会因块级内容被设置宽度而被改变。
 
 > 当 `writing-mode` 为 `vertical-[xxx]` 的时候，块级内容占据整个父级元素的垂直空间
 
+为了便于理解，我们将块级内容占据的**空间方向**称为 **主轴**，将**块级内容的排列方向**称为 **副轴**
+
+<Image width={200} height={200} src={blockShaft} />
+
+---
+
+`display: inline-[xxx]` 决定一个元素为行级内容
+
+**行级内容的排列方向**与块级**主轴**相同
+
+在 `display: inline` 时行级内容无法通过 `width` 或 `height` 调节其宽高，只能通过 `line-hight` 调节单行高度,通过 `padding` 调节宽高度
+
+<DisplayDemo />
+
 ### 2. margin
 
-### 3. 文档流 与 BFC
+### 3. 文档流 || BFC || LFC
 
 ### 4. transform 与 animation 的互相影响
 
