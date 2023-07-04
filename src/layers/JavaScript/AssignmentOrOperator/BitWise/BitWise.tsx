@@ -125,7 +125,7 @@ export default function BitWise() {
   return (
     <Article>
       <MdxResolver
-        Children={Mdx}
+        TC={Mdx}
         components={{ BitWiseDemo: memo(BitWiseDemo) }}
       ></MdxResolver>
     </Article>

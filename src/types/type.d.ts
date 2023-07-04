@@ -5,6 +5,6 @@ declare type RouteT = {
   children?: RouteT[];
 };
 
-declare type Layer = 'HTML' | 'CSS' | 'JavaScript' | 'TypeScript' | 'HOME';
+declare type Layer = 'HTML' | 'CSS' | 'JavaScript' | 'TypeScript' | 'HOME' | 'React' | 'Network';
 
 declare type TOC = Record<string, any>;

@@ -111,3 +111,9 @@ code {
 pre code {
   font-size: 1em !important;
 }
+
+ul {
+  p {
+    margin-bottom: initial;
+  }
+}

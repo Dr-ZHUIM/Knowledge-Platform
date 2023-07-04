@@ -35,7 +35,6 @@ function App() {
   });
   const routers = useMemo(() => {
     const result = generateRouters();
-    console.log('result', result);
     return result;
   }, [active]);
 

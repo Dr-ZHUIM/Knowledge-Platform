@@ -14,7 +14,6 @@ function validateInvalidRoute(route: RouteT) {
 
 function generateRoutes(route: RouteT, layer = 0) {
   if (validateInvalidRoute(route)) {
-    console.log(true);
     return null;
   }
   return (

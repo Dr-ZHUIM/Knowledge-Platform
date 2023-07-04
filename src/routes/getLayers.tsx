@@ -95,6 +95,5 @@ function createLayers() {
       });
     }
   });
-  console.log('layers', layers);
   return layers;
 }

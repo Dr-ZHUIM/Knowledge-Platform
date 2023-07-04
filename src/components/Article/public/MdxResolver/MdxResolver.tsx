@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
 } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './index.module.scss';
 import { CopyOutlined } from '@ant-design/icons';
 import { MessageContext } from '@/components/Layout/Layout';
@@ -89,7 +90,7 @@ function H3({ children }: PropsWithChildren) {
 function H4({ children }: PropsWithChildren) {
   const anchor = getAnchor(children);
   return (
-    <h4 className="flex items-center" id={anchor}>
+    <h4 className="flex items-center font-bold" id={anchor}>
       <Anchor target={anchor}>§</Anchor>
       {children}
     </h4>
@@ -99,7 +100,7 @@ function H4({ children }: PropsWithChildren) {
 function H5({ children }: PropsWithChildren) {
   const anchor = getAnchor(children);
   return (
-    <h5 className="flex items-center" id={anchor}>
+    <h5 className="flex items-center font-bold" id={anchor}>
       <Anchor target={anchor}>§</Anchor>
       {children}
     </h5>
@@ -109,7 +110,7 @@ function H5({ children }: PropsWithChildren) {
 function H6({ children }: PropsWithChildren) {
   const anchor = getAnchor(children);
   return (
-    <h6 className="flex items-center" id={anchor}>
+    <h6 className="flex items-center font-bold" id={anchor}>
       <Anchor target={anchor}>§</Anchor>
       {children}
     </h6>
@@ -170,6 +171,7 @@ export default function MdxResolver({
           h6: H6,
           a: Anchor,
           Anchor: Anchor,
+          Link: Link,
           pre: Pre,
           Image: MarkImage,
           Mark,

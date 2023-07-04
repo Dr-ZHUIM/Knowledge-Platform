@@ -31,7 +31,7 @@ type Message = {
 
 export const MessageContext = createContext({
   openMessage: ({ message, description }: Message) => {
-    console.log(message, description);
+    return;
   },
 });
 
