@@ -1,19 +1,18 @@
+import { MessageContext } from '@/components/Layout/Layout';
+import { CopyOutlined } from '@ant-design/icons';
+import { MergeComponents } from '@mdx-js/react/lib';
+import { Image } from 'antd';
+import { CompositionImage, ImageProps } from 'antd/es/image';
+import { MDXComponents } from 'mdx/types';
 import {
   PropsWithChildren,
   useCallback,
-  useRef,
   useContext,
-  useEffect,
+  useMemo,
+  useRef,
 } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './index.module.scss';
-import { CopyOutlined } from '@ant-design/icons';
-import { MessageContext } from '@/components/Layout/Layout';
-import { MDXComponents } from 'mdx/types';
-import { MergeComponents } from '@mdx-js/react/lib';
-import { useHasMounted } from '@/utils/hooks';
-import { Image } from 'antd';
-import { CompositionImage, ImageProps } from 'antd/es/image';
 
 function TextResolver(text: string) {
   return text;
@@ -41,6 +40,9 @@ function Anchor({
   children: React.ReactNode;
   target?: string;
 }) {
+  const id = useMemo(() => {
+    return target || getAnchor(children);
+  }, [target]);
   function scrollToAnchorById(id?: string) {
     const node = id && document.getElementById(id);
     if (node) {
@@ -50,7 +52,7 @@ function Anchor({
   return (
     <span
       className="text-[#3eaf7c] cursor-pointer mr-2"
-      onClick={() => scrollToAnchorById(target)}
+      onClick={() => scrollToAnchorById(id)}
     >
       {children}
     </span>
@@ -154,11 +156,8 @@ export default function MdxResolver({
   components?: MDXComponents | MergeComponents | null | undefined;
   TC: (...args: any[]) => React.ReactElement;
 }) {
-  const hasMounted = useHasMounted();
   const getContentRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    const content = getContentRef.current;
-  }, [hasMounted]);
+
   return (
     <div ref={getContentRef}>
       <TC

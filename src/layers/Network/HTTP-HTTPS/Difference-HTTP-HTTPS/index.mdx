@@ -2,7 +2,7 @@
 
 本文将讨论一个经典问题：请你说说 HTTP 与 HTTPS 的区别 :smile:
 
-## Table Of Contents
+## TOC
 
 ## 知识前提
 
@@ -106,6 +106,8 @@ HTTP 1.1 引入了许多关键性能优化：默认长连接，chunked 编码传
 
 8. Client Cookies: HTTP 作为**无状态协议**，无法记录稳定的状态信息，cookies 则是服务器发送到客户端浏览器本地的数据，在下一次请求发送时，cookies 会被连带发送至服务器。
 
+---
+
 ##### Period IV. HTTP/2.0 (2015)
 
 它具有以下特点：
@@ -124,6 +126,8 @@ HTTP 1.1 引入了许多关键性能优化：默认长连接，chunked 编码传
 
 7. 方便中断：使用 HTTP/2.0 的 RST_STREAM 将能方便停止一个信息传输，启动新的信息，而 HTTP/1.0 只能中断 TCP 连接, 显得太过昂贵
 
+---
+
 ##### Period V. HTTP/3 (2017)
 
 HTTP3 协议解决了这些问题：
@@ -133,6 +137,8 @@ HTTP3 协议解决了这些问题：
 2. HTTP3 重新定义了 TLS 协议加密 QUIC 头部的方式，既提高了网络攻击成本，又降低了建立连接的速度
 
 3. HTTP3 将 Packet、QUIC Frame、HTTP3 Frame 分离，实现了连接迁移功能，降低了 5G 环境下高速移动设备的连接维护成本。
+
+---
 
 #### Part II. HTTP 请求 是什么?
 
@@ -160,6 +166,8 @@ HTTP 属于一种客户端-服务器(client-server)协议，HTTP 请求(request)
 
 当一个 HTTP 连接使用了 SSL/TLS 协议，我们称它为 HTTPS，S 意为 **安全** (**secure**)
 
+---
+
 #### Part II. 为何需要 HTTPS?
 
 这里一共有三大使用 HTTPS 的原因：
@@ -185,6 +193,8 @@ HTTPS 能验证目标网站和用户的个人身份.
 HTTPS 通过电子签名 (digital signature) 来验证用户
 
 同时, HTTPS 通过 SSL 证书 (SSL certificate) 与 CA 证书 (Certificate Authority) 来验证服务器.
+
+---
 
 #### Part III. 密钥
 
@@ -216,6 +226,8 @@ HTTPS 需要一个能够保障隐私性、可靠性、可验证性的方案，�
 
 - 不管是谁只要有这个密钥都能解读信息，所以要注意密钥的存放.
 
+---
+
 ##### 非对称加密法 🔑🔑
 
 非对称加密法提供两份密钥：公钥与个人密钥.
@@ -228,6 +240,8 @@ HTTPS 需要一个能够保障隐私性、可靠性、可验证性的方案，�
 
 非对称加密法有助与保障隐私性，也因为只有拥有者有两把密钥能够解密信息，故非对称加密法也能够保障可验证性
 
+---
+
 #### Part IV. 握手
 
 当浏览器与服务器通信时，它们会建立一个安全的<Link to="/Network/">TCP</Link>(基于 HTTP2.0)连接去传输信息 。
@@ -236,48 +250,61 @@ HTTPS 需要一个能够保障隐私性、可靠性、可验证性的方案，�
 
 ##### 客户端握手请求
 
-At first, the client side makes a handshake request by sending expressly to the server with a list of SSL/TLS versions and encryption algorithms that the client side can work with.
+首先，客户端发送握手请求，握手请求中包含客户端能够使用的 SSL/TLS 版本以及加密算法。
 
 ##### 服务器握手请求
 
-Secondly, the server side makes a negotiation response with a ensured SSL/TL version and encryption algorithm among the list which the client side send.
-Additonally, sth server side will reply its certificate with its public key
+第二步，服务端从客户端发来的版本列表中制作一份确认 SSL/TLS 版本以及加密算法的协商响应，同时服务端会返回它的证书与公钥
 
-##### Client Side's Certificate Validation and Key Exchange
+##### 客户端证书验证与密钥交换
 
-Thirdly, the client side validates the certificate to make sure it is legit and generates a `"pre-master key"` by encrypting the public key the server side sended with symmetric key algorithm.  
-The client side send this pre-master key to the server side.
+第三步，客户端验证证书以确保证书的合法信息(有效日期,颁发机构)，同时将服务端的公钥通过对称加密法生成一个预主密钥(pre-master key)
 
-##### Server Side Decrypts Pre-master Key
+客户端将预主密钥发送至服务端
 
-The server side decrypts the pre=-master key by the private key, then it gets a symmetric key
+##### 服务端解密预主密钥
 
-##### Both of Them Use the New Symmetric Key to Communicate
+服务器用私钥解密预主密钥，获取对称密钥
 
-Now all data going back and forth between client side and server side is now secured for the rest of the session.
+##### 使用对称密钥进行通信
+
+双方使用对称密钥进行解码或者加码，能够快乐的通信了。
+
+---
 
 #### Part V. 证书授权
 
-A certificate authority (CA) is a third-party organization with three steps:
+CA 证书(certificate authority)是一种第三方机构认证的证书，制作证书有三个步骤：
 
-- **Issuing certificates**
-- **Confirming the identity of the owner**
-- **Providing proof that the certificate is valid**
+1. **发行证书**
+2. **验证拥有者身份**
+3. **提供证书有效的证明**
 
-##### How to verify the certificate?
+##### 如何验证 CA 证书?
 
-When a CA issues a certificate, they sign the certificate with their root certificate pre-installed from the root-store. This validation will be aparted into several parts.
+当 CA 机构发布 CA 证书时, 他们会把 root 级证书标记在证书上，对于客户端来说，验证要分为几步
 
-- Your browser connects to a site via HTTPS and downloads the certificate.
-  - The certificate is a root certificate.
-  - **Stop here**
-- The certificate is not a root certificate.
-- Your browser downloads the certificate that was used to sign the certificate on the site.
-  - The certificate is a root certificate.
-  - **Stop here**
-- But this certificate is still not the root certificate.
-- Your browser once more looks up the certificate that signed the intermediate certificate.
-  - The certificate is a root certificate.
-  - **Stop here**
-- The last certificate is not a root certificate
-- This chain is not trusted
+- 浏览器通过 HTTPS 连接站点时，下载证书
+  - 证书是 root 级证书.
+  - **验证成功**
+- 证书不是 root 级证书.
+- 浏览器下载站点曾经使用的证书.
+  - 证书是 root 级证书.
+  - **验证成功**
+- 证书仍不是 root 级证书.
+- 浏览器继续下载站点曾经使用的证书
+  - 证书是 root 级证书.
+  - **验证成功**
+- 最后一份证书也不是 root 级证书
+- 站点不被信任
+
+---
+
+## 结论
+
+HTTP 与 HTTPS 的区别：
+
+1. https 协议需要到 ca 申请证书或自制证书。
+2. http 的信息是明文传输,https 则是具有安全性的 ssl 加密。
+3. http 端口为 80,https 端口为 443。
+4. http 的连接很简单,是无状态的;HTTPS 协议是由 SSL+HTTP 协议构建的可进行加密传输、身份认证的网络协议，比 http 协议安全。

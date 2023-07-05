@@ -1,0 +1,39 @@
+import Issue_8 from '@imgs/article/TypeScript/issue_8.png';
+
+# 使用 `as` 关键字重定义 key
+
+Ts 体操中做到一道题
+
+### 8 - Readonly 2
+
+实现一个泛型`MyReadonly2<T, K>`，使它接受两个类型参数 `T` 和 `K` , `K` 被用于设定 `T` 中哪些属性需要被设置为只读，当 `K` 没有被传入时，使所有属性都被设置为只读。
+
+```ts
+interface Todo {
+  title: string;
+  description: string;
+  completed: boolean;
+}
+
+const todo: MyReadonly2<Todo, 'title' | 'description'> = {
+  title: 'Hey',
+  description: 'foobar',
+  completed: false,
+};
+
+todo.title = 'Hello'; // Error: cannot reassign a readonly property
+todo.description = 'barFoo'; // Error: cannot reassign a readonly property
+todo.completed = true; // OK
+```
+
+在 GitHub 上看到一个题解，可以说非常有趣，本文就以这个 type 为例着重讲一下 **as 关键字重定义 key** 的知识点
+
+<Image width={480} src={Issue_8} />
+
+```ts
+type MyReadonly2<T, K extends keyof T = keyof T> = {
+  [P in keyof T as P extends K ? never : P]: T[P];
+} & {
+  readonly [P in K]: T[P];
+};
+```
