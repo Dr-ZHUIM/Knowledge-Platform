@@ -34,11 +34,3 @@ export function getValidLayer(active: Layer) {
   const activeLayer = layers[active];
   return activeLayer && activeLayer[0].children;
 }
-
-export function handlePage(page: string) {
-  const pagePath = page.split('/');
-  return {
-    currentRoutes: ['', `/${pagePath[1]}/${pagePath[2]}`],
-    active: pagePath[1] as Layer,
-  };
-}

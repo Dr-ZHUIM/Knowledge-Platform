@@ -1,0 +1,13 @@
+.logoMount {
+  animation: mount 0.5s linear;
+}
+
+.logoUnmount {
+  animation: unmount 0.5s linear;
+}
+
+.logo {
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}

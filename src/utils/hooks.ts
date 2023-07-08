@@ -1,6 +1,27 @@
 import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 
+export function useWindowWidth() {
+  const [width, setWidth] = useState(
+    document.documentElement.clientWidth || document.body.clientWidth,
+  );
+  const callback = _.debounce(
+    () =>
+      setWidth(
+        document.documentElement.clientWidth || document.body.clientWidth,
+      ),
+    200,
+  );
+  useEffect(() => {
+    callback();
+    window.addEventListener('resize', callback);
+    return () => {
+      window.removeEventListener('resize', callback);
+    };
+  }, []);
+  return width;
+}
+
 export function useResize(fn: () => void, debounceDelay = 200) {
   const callback = _.debounce(fn, debounceDelay);
   useEffect(() => {
@@ -31,4 +52,12 @@ export function useInput(
     [],
   );
   return [input, handleChange];
+}
+
+export function useToggle(initialState = false): [boolean, () => void] {
+  const [state, setState] = useState(initialState);
+  const handleToggle = useCallback(() => {
+    setState((v) => !v);
+  }, []);
+  return [state, handleToggle];
 }

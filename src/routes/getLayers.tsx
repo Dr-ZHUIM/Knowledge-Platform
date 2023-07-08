@@ -1,4 +1,5 @@
 import React from 'react';
+import Articles from '@/pages/Articles/Articles';
 
 export function getlayers() {
   return createLayers();
@@ -81,18 +82,6 @@ function createLayers() {
             ),
           ],
         });
-    } else if (!layer[0].element) {
-      const currentLayer = layer[0].children || [];
-      currentLayer.unshift({
-        path: `/${layerLabel}/HOME`,
-        label: 'HOME',
-        element: (
-          <ModuleToComponent
-            title={`${layerLabel}-HOME`}
-            FC={module[`${layerLabel}`] || module[`default`]}
-          />
-        ),
-      });
     }
   });
   return layers;

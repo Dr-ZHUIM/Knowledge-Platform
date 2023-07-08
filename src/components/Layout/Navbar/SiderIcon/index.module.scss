@@ -1,0 +1,10 @@
+.icon {
+  font-size: 1.4rem;
+  line-height: 1.4rem;
+  color: #ffffff;
+  transition: 0.5s;
+  &:hover {
+    color: #528eb6;
+    transition: 0.5s;
+  }
+}
