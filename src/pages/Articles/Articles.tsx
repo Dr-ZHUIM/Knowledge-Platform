@@ -21,8 +21,8 @@ type MenuItemProps = {
 
 function MenuList({ title, items, onNavigate }: MenuListProps) {
   return (
-    <>
-      <h3>{title}</h3>
+    <div className="flex-col">
+      <h3 className="text-[var(--color-primary-800)]">{title}</h3>
       <div className={`flex flex-col ${styles['menu-list']}`}>
         {items.map((item) => (
           <MenuItem
@@ -35,7 +35,7 @@ function MenuList({ title, items, onNavigate }: MenuListProps) {
           />
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -54,9 +54,11 @@ function MenuItem({
     >
       <h4>{title}</h4>
       {subtitle && <h5>{subtitle}</h5>}
-      {summary.split('\n').map((p, index) => (
-        <p key={index}>{p}</p>
-      ))}
+      <div>
+        {summary.split('\n').map((p, index) => (
+          <p key={index}>{p}</p>
+        ))}
+      </div>
     </div>
   );
 }

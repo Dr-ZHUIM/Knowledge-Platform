@@ -1,7 +1,9 @@
 .menu-list {
+  padding-top: 8px;
   .menu-item {
     margin-top: 48px;
-    gap h4,
+    transition: 0.3s;
+    h4,
     p {
       margin: 0;
       transition: 0.3s;
@@ -10,12 +12,17 @@
       font-size: 1.2rem;
       font-weight: bolder;
     }
+    h5 {
+      font-size: 1rem;
+      color: var(--color-f-unhover);
+    }
     p {
       font-size: 0.9rem;
+      color: #aaa;
     }
     &:hover {
       h4 {
-        color: var(--color-light);
+        color: var(--color-primary-800);
       }
     }
     &:nth-child(1) {
