@@ -28,13 +28,36 @@ html {
   --font-family: 'League Mono', 'Fira Mono', monospace;
   --font-family-mono: 'League Mono', 'Fira Mono', monospace;
   --font-family-spicy: 'Sriracha', 'Wotfard', Futura, -apple-system, sans-serif;
-  --color-primary: #001529;
+  --color-primary: rgb(0, 21, 41);
+  --color-primary-100: rgba(0, 21, 41, 0.1);
+  --color-primary-200: rgba(0, 21, 41, 0.2);
+  --color-primary-300: rgba(0, 21, 41, 0.3);
+  --color-primary-400: rgba(0, 21, 41, 0.4);
+  --color-primary-500: rgba(0, 21, 41, 0.5);
+  --color-primary-600: rgba(0, 21, 41, 0.6);
+  --color-primary-700: rgba(0, 21, 41, 0.7);
+  --color-primary-800: rgba(0, 21, 41, 0.8);
+  --color-primary-900: rgba(0, 21, 41, 0.9);
   --color-light: #002445;
   --color-success: #116526;
   --color-success-light: #189437;
   --color-danger: #ae221d;
   --color-danger-light: #e3342f;
   --color-f-unhover: rgba(255, 255, 255, 0.65);
+  // scroll behavior
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: var(--color-primary-500);
+    &:hover {
+      background-color: var(--color-primary-700);
+    }
+  }
+  // reset headers
   h1 {
     font-size: var(--font-vex);
   }

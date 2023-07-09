@@ -46,7 +46,7 @@ function Anchor({
   function scrollToAnchorById(id?: string) {
     const node = id && document.getElementById(id);
     if (node) {
-      node.scrollIntoView();
+      document.documentElement.scrollBy({ top: node.offsetTop - 60 });
     }
   }
   return (

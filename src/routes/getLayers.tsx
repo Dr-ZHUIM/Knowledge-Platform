@@ -1,5 +1,4 @@
 import React from 'react';
-import Articles from '@/pages/Articles/Articles';
 
 export function getlayers() {
   return createLayers();
@@ -13,7 +12,8 @@ function createChildRoute(
   return {
     path: `${parentPath}/${routeLabel}`,
     label: module[`label`] || routeLabel,
-    info: '',
+    summary: module[`summary`] || '这篇文章没有摘要',
+    subLabel: module[`subLabel`] || '',
     element: (
       <ModuleToComponent
         title={module[`label`] || routeLabel}
@@ -54,6 +54,8 @@ function createLayers() {
         path: `/${layerLabel}`,
         label: layerLabel,
         children: [],
+        summary: '',
+        subLabel: '',
       },
     ]);
     const routeExists =
@@ -74,6 +76,8 @@ function createLayers() {
         layer[0].children.push({
           path: `/${layerLabel}/${getLabel(filePath, 1)}`,
           label: getLabel(filePath, 1),
+          summary: '',
+          subLabel: '',
           children: [
             createChildRoute(
               getLabel(filePath, 2),
