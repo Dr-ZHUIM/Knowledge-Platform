@@ -52,6 +52,7 @@
     "typescript": "^4.9.3",
     "typescript-plugin-css-modules": "^5.0.1",
     "vite": "^4.2.0",
+    "vite-plugin-inspect": "^0.7.32",
     "vite-plugin-mdx": "^3.5.11",
     "vitest": "^0.31.0",
     "xmind-embed-viewer": "^1.1.0"

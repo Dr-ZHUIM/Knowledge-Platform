@@ -50,7 +50,11 @@ function Layout(props: React.PropsWithChildren) {
           {isMobile ? (
             <></>
           ) : (
-            <Navbar layers={Object.keys(layers) as Layer[]} />
+            <Navbar
+              layers={
+                Object.entries(layers) as [Layer, Record<string, RouteT[]>][]
+              }
+            />
           )}
           <main className="main-container">{props.children}</main>
         </section>

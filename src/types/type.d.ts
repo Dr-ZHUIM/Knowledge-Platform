@@ -7,7 +7,9 @@ declare type RouteT = {
   children?: RouteT[];
 };
 
-declare type Layer =
+declare type Layer = 'Post' | 'Snippet';
+
+declare type PostType =
   | 'HTML'
   | 'CSS'
   | 'JavaScript'

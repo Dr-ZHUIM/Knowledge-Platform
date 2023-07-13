@@ -2,11 +2,28 @@ import { Route } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import { getlayers } from './getLayers';
 
-// layers' raw data
-export const layers: Record<string, RouteT[] | undefined> = getlayers();
+// find children of layers folder
+function globFolders(): Record<Layer, [string, any[]][]> {
+  return {
+    Post: Object.entries(
+      import.meta.glob(`@/layers/Post/**/*.tsx`, { eager: true }),
+    ),
+    Snippet: Object.entries(
+      import.meta.glob(`@/layers/Snippets/**/*.tsx`, { eager: true }),
+    ),
+  };
+}
+
+const folders = globFolders();
+
+export const layers = getlayers(folders);
 
 const routes: RouteT[] = [];
-Object.values(layers).forEach((layer) => layer && routes.push(...layer));
+Object.values(layers).forEach((layer) =>
+  Object.values(layer).forEach(
+    (category) => category && routes.push(...category),
+  ),
+);
 
 function validateInvalidRoute(route: RouteT) {
   return !route.label || !route.path;

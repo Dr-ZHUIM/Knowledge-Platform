@@ -38,7 +38,7 @@ function App() {
       <Layout>
         <Routes>
           {routers}
-          <Route path="/Articles/:layer" element={<Articles />} />
+          <Route path="/Articles/:layer/:category" element={<Articles />} />
           <Route path="/HOME" element={<Home />} />
           <Route path="/Error/404" element={<ErrorPage />} />
           <Route path="/" element={<Navigate to="/HOME" replace />} />

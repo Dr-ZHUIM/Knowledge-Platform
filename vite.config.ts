@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import inspect from 'vite-plugin-inspect';
 import react from '@vitejs/plugin-react';
 import mdx from '@mdx-js/rollup';
 import remarkEmoji from 'remark-emoji';
@@ -11,6 +12,10 @@ import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    inspect({
+      build: true,
+      outputDir: '.vite-inspect',
+    }),
     react(),
     /**
      * mdx plugins
@@ -38,6 +43,7 @@ export default defineConfig({
       '@imgs': path.resolve(__dirname, './src/assets/imgs'),
       '@styles': path.resolve(__dirname, './src/assets/styles'),
       '@const': path.resolve(__dirname, './src/constants/const'),
+      '@test': path.resolve(__dirname, './test'),
       'node-fetch': 'isomorphic-fetch',
     },
   },

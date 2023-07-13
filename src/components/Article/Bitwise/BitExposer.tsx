@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './BitExposer.module.scss';
-import { get32Bit } from '@/layers/JavaScript/AssignmentOrOperator/BitWise/utils';
+import { get32Bit } from '@/layers/Post/JavaScript/AssignmentOrOperator/BitWise/utils';
 
 type BitExposerType = {
   num: number;

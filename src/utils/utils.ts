@@ -13,6 +13,6 @@ export function handlePage(page: string) {
   const pagePath = page.split('/');
   return {
     currentRoutes: ['', `/${pagePath[1]}/${pagePath[2]}`],
-    active: pagePath[1] as Layer,
+    active: pagePath[1] as PostType,
   };
 }

@@ -1,7 +1,7 @@
-import { Fragment, useMemo } from 'react';
 import Article from '@/components/Article/Article';
-import { useNavigate, useParams } from 'react-router-dom';
 import { layers } from '@/routes/getRoutes';
+import { Fragment, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import styles from './index.module.scss';
 import { getArticles } from './utils';
 
@@ -65,11 +65,11 @@ function MenuItem({
 
 export default function Articles() {
   const navigate = useNavigate();
-  const { layer } = useParams<Record<string, Layer>>();
+  const { layer, category } = useParams<{ layer: Layer; category: string }>();
   const menuLists = useMemo(() => {
     if (layer) {
-      const _layer = layers[layer];
-      return (_layer && _layer[0].children) || [];
+      const _category = layers[layer] && category && layers[layer][category];
+      return (_category && _category[0].children) || [];
     }
     return [];
   }, [layer]);

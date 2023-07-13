@@ -32,6 +32,9 @@
       ],
       "@const": [
         "./src/constants/const"
+      ],
+      "@test": [
+        "./test/*"
       ]
     },
     "plugins": [
@@ -42,6 +45,7 @@
   },
   "include": [
     "src",
+    "plugins",
     "**/*.ts",
     "**/*.tsx"
   ],

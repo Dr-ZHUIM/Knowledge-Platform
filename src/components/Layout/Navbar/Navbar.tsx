@@ -12,25 +12,30 @@ import styles from './index.module.scss';
 import logoImg from '@imgs/logo.png';
 
 type NavbarProps = {
-  layers: Layer[];
+  layers: [Layer, Record<string, RouteT[]>][];
 };
 export default function Navbar({ layers }: NavbarProps) {
   const navigate = useNavigate();
-  const changeLayer = (layer: Layer) => {
-    navigate(`/Articles/${layer}`);
+  const changeLayer = (category: PostType, layer: Layer) => {
+    navigate(`/Articles/${layer}/${category}`);
   };
   return (
     <header className={`flex ${styles.navbar}`}>
       <div className="flex items-center gap-4">
-        <Logo imgPath={logoImg} />
-        <Post
-          title="Post"
-          icon={
-            <DownOutlined style={{ fontSize: '.8rem', marginLeft: '.7rem' }} />
-          }
-          layers={layers}
-          onClick={(key) => changeLayer(key as Layer)}
-        />
+        <Logo onClick={() => navigate('/')} imgPath={logoImg} />
+        {layers.map(([layer, layerItems]) => (
+          <Post
+            title={layer}
+            key={layer}
+            icon={
+              <DownOutlined
+                style={{ fontSize: '.8rem', marginLeft: '.7rem' }}
+              />
+            }
+            categories={Object.keys(layerItems)}
+            onClick={(key) => changeLayer(key as PostType, layer)}
+          />
+        ))}
       </div>
       <div className="flex items-center gap-[2rem]">
         <NavbarIcon

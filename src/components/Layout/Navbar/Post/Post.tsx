@@ -5,18 +5,18 @@ import { handleClassName } from '@/utils/utils';
 
 type PostProps = {
   title: string;
-  layers: string[];
+  categories: string[];
   icon?: React.ReactElement;
   onClick: (key: string) => void;
 };
 
-export default function Post({ title, layers, icon, onClick }: PostProps) {
+export default function Post({ title, categories, icon, onClick }: PostProps) {
   const [toggle, handleToggle] = useToggle();
   return (
     <>
       <div
         onClick={handleToggle}
-        className={`${styles['navbar-item']} pos-re flex items-center flex-1`}
+        className={`${styles['navbar-item']} pos-re flex items-center justify-center`}
       >
         {title}
         {icon}
@@ -25,7 +25,7 @@ export default function Post({ title, layers, icon, onClick }: PostProps) {
             `${toggle ? '' : styles['collapse-hide']}`,
           )}`}
         >
-          {layers.map((key) => (
+          {categories.map((key) => (
             <div onClick={() => onClick(key)} key={key}>
               {key}
             </div>

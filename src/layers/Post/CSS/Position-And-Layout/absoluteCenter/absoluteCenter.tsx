@@ -50,7 +50,7 @@ function CenterDemo({
 function DisplayDemo() {
   const divRef = useRef<HTMLDivElement | null>(null);
   return (
-    <CSSDemo options={displayOptions} ControlledElement={divRef.current}>
+    <CSSDemo options={displayOptions} ControlledRef={divRef}>
       <div>
         <div className="w-[50%] bg-[var(--color-light)] block h-[100px] border-solid border-[1px] border-[#000]">
           div1

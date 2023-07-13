@@ -28,10 +28,8 @@
   - constants
     - const.ts
   - layers ---------- routes which can be catched by Layout components automatically.
-    - CSS
-    - HTML
-    - JavaScript
-    - TypeScript
+    - Posts ---------- articles
+    - Snippets --------- code snippets
   - pages  ---------- routes which will be used artificially
     - Error ---------- redirect to here when getting a invalid route 
     - Home ---------- home page
@@ -67,5 +65,6 @@ npm i isomorphic-fetch -D
 ```
 
 ## issues
-
 - [ ] Xmind compilation
+- [ ] Vite plugin
+- [ ] Vscode Plugin that you can create a template quickly just like uniapp

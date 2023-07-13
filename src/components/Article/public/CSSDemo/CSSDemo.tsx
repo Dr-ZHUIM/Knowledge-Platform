@@ -5,7 +5,7 @@ import styles from './index.module.scss';
 type CssDemoProps = {
   options: React.CSSProperties[];
   children: React.ReactNode;
-  ControlledElement: HTMLElement | null;
+  ControlledRef: React.MutableRefObject<HTMLDivElement | null>;
 };
 
 function CssProperties({ css }: { css: React.CSSProperties }) {
@@ -22,7 +22,14 @@ function CssProperties({ css }: { css: React.CSSProperties }) {
   );
 }
 
-function CSSDemo({ options, children, ControlledElement }: CssDemoProps) {
+/**
+ *
+ * @param options ----- every option is based on React.CSSProperties
+ * @param children ----- some divs to show your demo
+ * @param ControlledElement ----- which div will be controlled
+ *
+ */
+function CSSDemo({ options, children, ControlledRef }: CssDemoProps) {
   const [active, setActive] = useState(0);
   const handleClick = useCallback(
     (e: React.MouseEvent & { currentTarget: { dataset: any } }) => {
@@ -31,14 +38,15 @@ function CSSDemo({ options, children, ControlledElement }: CssDemoProps) {
     [],
   );
   useEffect(() => {
-    if (ControlledElement) {
+    const controlledElement = ControlledRef.current;
+    if (controlledElement !== null) {
       const keys = Object.keys(options[active]) as any[];
       const values = Object.values(options[active]);
       keys.forEach((key, index) => {
-        ControlledElement.style[key] = values[index];
+        controlledElement.style[key] = values[index];
       });
     }
-  }, [active, ControlledElement, options]);
+  }, [active, ControlledRef, options]);
   return (
     <Demo>
       <div className={styles['css-demo-wrapper']}>
