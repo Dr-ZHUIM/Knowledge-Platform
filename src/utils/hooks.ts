@@ -54,10 +54,22 @@ export function useInput(
   return [input, handleChange];
 }
 
-export function useToggle(initialState = false): [boolean, () => void] {
+export function useToggle(
+  initialState = false,
+): [boolean, () => void, React.Dispatch<React.SetStateAction<boolean>>] {
   const [state, setState] = useState(initialState);
   const handleToggle = useCallback(() => {
     setState((v) => !v);
+  }, []);
+  return [state, handleToggle, setState];
+}
+
+export function useDarkmode(
+  initialState: 'dark' | 'light' = 'light',
+): ['dark' | 'light', () => void] {
+  const [state, setState] = useState(initialState);
+  const handleToggle = useCallback(() => {
+    setState((v) => (v === 'dark' ? 'light' : 'dark'));
   }, []);
   return [state, handleToggle];
 }

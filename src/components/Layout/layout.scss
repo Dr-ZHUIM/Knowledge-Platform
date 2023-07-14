@@ -3,22 +3,54 @@
   min-height: 100%;
   display: flex;
   scrollbar-gutter: stable;
+  background-color: var(--color-bg);
+  color: var(--color-font);
+  transition: 0.5s;
   .layout {
     flex: 1;
     min-height: 100%;
   }
 }
 
+.layout-container[color-mode='dark'] {
+  --color-bg: hsl(210deg, 30%, 8%);
+  --color-font: #ffffff;
+}
+
+.layout-container[color-mode='light'] {
+  --color-bg: #ffffff;
+  --color-font: #000000;
+}
+
 .main-container {
   flex: 1;
   width: 100%;
-  max-width: 1100px;
   margin-inline: auto;
-  padding: 40px 80px 60px 80px;
   section {
     display: flex;
     flex-direction: column;
     width: 100%;
+  }
+}
+
+@media screen and (min-width: 375px) {
+  .main-container {
+    max-width: 375px;
+    padding: 40px 20px 60px 20px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .main-container {
+    max-width: 768px;
+    padding: 40px 20px 60px 20px;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .main-container {
+    max-width: 1100px;
+    padding: 40px 80px 60px 80px;
   }
 }
 

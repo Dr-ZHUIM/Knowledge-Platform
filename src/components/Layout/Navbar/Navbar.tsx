@@ -1,22 +1,17 @@
-import {
-  GithubOutlined,
-  HomeOutlined,
-  UserOutlined,
-  DownOutlined,
-} from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import Logo from './Logo/Logo';
+import Logo from '../Logo/Logo';
 import Post from './Post/Post';
-import NavbarIcon from './SiderIcon/SiderIcon';
 import styles from './index.module.scss';
 import logoImg from '@imgs/logo.png';
 
 type NavbarProps = {
   layers: [Layer, Record<string, RouteT[]>][];
+  btnGroup?: React.ReactNode;
 };
-export default function Navbar({ layers }: NavbarProps) {
+export default function Navbar({ layers, btnGroup }: NavbarProps) {
   const navigate = useNavigate();
-  const changeLayer = (category: PostType, layer: Layer) => {
+  const toArticle = (category: PostType, layer: Layer) => {
     navigate(`/Articles/${layer}/${category}`);
   };
   return (
@@ -33,18 +28,11 @@ export default function Navbar({ layers }: NavbarProps) {
               />
             }
             categories={Object.keys(layerItems)}
-            onClick={(key) => changeLayer(key as PostType, layer)}
+            onClick={(category) => toArticle(category as PostType, layer)}
           />
         ))}
       </div>
-      <div className="flex items-center gap-[2rem]">
-        <NavbarIcon
-          href="https://github.com/Dr-ZHUIM"
-          icon={<GithubOutlined />}
-        />
-        <NavbarIcon href="http://www.zhuim.fun" icon={<UserOutlined />} />
-        <NavbarIcon onClick={() => navigate('/')} icon={<HomeOutlined />} />
-      </div>
+      {btnGroup}
     </header>
   );
 }

@@ -18,7 +18,7 @@ import '@styles/normalize.scss';
 import 'antd/dist/reset.css';
 import Articles from './pages/Articles/Articles';
 
-export const LayerContext = createContext<{
+export const AppContext = createContext<{
   isMobile: boolean;
 }>({ isMobile: false });
 
@@ -27,14 +27,14 @@ function App() {
   const [_isMobile, set_isMobile] = useState(isMobile || width <= 768);
   useEffect(() => {
     isMobile || width <= 768 ? set_isMobile(true) : set_isMobile(false);
-  }, [width]);
+  }, [width, isMobile]);
 
   const routers = useMemo(() => {
     return generateRouters();
   }, []);
 
   return (
-    <LayerContext.Provider value={{ isMobile: _isMobile }}>
+    <AppContext.Provider value={{ isMobile: _isMobile }}>
       <Layout>
         <Routes>
           {routers}
@@ -45,7 +45,7 @@ function App() {
           <Route path="/*" element={<Navigate to="Error/404" replace />} />
         </Routes>
       </Layout>
-    </LayerContext.Provider>
+    </AppContext.Provider>
   );
 }
 
