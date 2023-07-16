@@ -91,6 +91,7 @@ function Layout(props: React.PropsWithChildren) {
       }
     }
   };
+
   return (
     <MessageContext.Provider value={{ openMessage }}>
       {contextHolder}

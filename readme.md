@@ -68,3 +68,4 @@ npm i isomorphic-fetch -D
 - [ ] Xmind compilation
 - [ ] Vite plugin
 - [ ] Vscode Plugin that you can create a template quickly just like uniapp
+- [ ] tranform Navbar from logic component to render component

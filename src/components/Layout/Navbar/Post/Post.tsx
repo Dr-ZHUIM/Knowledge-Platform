@@ -1,32 +1,46 @@
-import { useToggle } from '@/utils/hooks';
+import { handleClassName } from '@/utils/utils';
 import React from 'react';
 import styles from './index.module.scss';
-import { handleClassName } from '@/utils/utils';
 
 type PostProps = {
   title: string;
   categories: string[];
   icon?: React.ReactElement;
+  show: boolean;
   onClick: (key: string) => void;
+  onChange: (key: string) => void;
 };
 
-export default function Post({ title, categories, icon, onClick }: PostProps) {
-  const [toggle, handleToggle] = useToggle();
+export default function Post({
+  show,
+  title,
+  categories,
+  icon,
+  onClick,
+  onChange,
+}: PostProps) {
   return (
     <>
-      <div
-        onClick={handleToggle}
-        className={`${styles['navbar-item']} pos-re flex items-center justify-center`}
-      >
-        {title}
-        {icon}
+      <div className={`${styles['navbar-item']} pos-re`}>
+        <div
+          onClick={() => onChange(show ? '' : title)}
+          className=" flex items-center justify-center"
+        >
+          {title}
+          {icon}
+        </div>
         <div
           className={`${styles.collapse}${handleClassName(
-            `${toggle ? '' : styles['collapse-hide']}`,
+            `${show ? '' : styles['collapse-hide']}`,
           )}`}
         >
           {categories.map((key) => (
-            <div onClick={() => onClick(key)} key={key}>
+            <div
+              onClick={() => {
+                onClick(key);
+              }}
+              key={key}
+            >
               {key}
             </div>
           ))}

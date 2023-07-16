@@ -72,7 +72,7 @@ export default function Articles() {
       return (_category && _category[0].children) || [];
     }
     return [];
-  }, [layer]);
+  }, [layer, category]);
   const goArticle = (path: string) => {
     navigate(path);
   };
