@@ -79,7 +79,7 @@ export default function Articles() {
   return (
     <Article>
       <div className="flex justify-between mb-[48px] font-bolder">
-        <span className="text-[36px] ">{layer}</span>
+        <span className="text-[36px] ">{category}</span>
         <span className="text-[36px] ">Articles: {getArticles(menuLists)}</span>
       </div>
       {menuLists.map((list, index) => (

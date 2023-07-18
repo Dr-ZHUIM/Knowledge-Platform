@@ -1,6 +1,289 @@
+import react_lifecycle from '@imgs/article/React/react-hook-lifecycle.png';
+import react_timeline from '@imgs/article/React/react-hook-timeline-diagram.png';
 export var label = '解析React渲染流程';
 export var summary = 'hiuhiuhi';
 
-# 解析 React 渲染流程
+# 引用说明
 
-dasd
+本文参考文章
+
+<p>
+<Link
+  target="_blank"
+  to="https://blog.isquaredsoftware.com/2020/05/blogged-answers-a-mostly-complete-guide-to-react-rendering-behavior/#further-information"
+  children="1. Blogged Answers: A (Mostly) Complete Guide to React Rendering Behavior
+"
+></Link>
+
+<br />
+
+<Link
+  target="_blank"
+  to="https://www.joshwcomeau.com/react/why-react-re-renders/"
+  children="2. Why React Re-Renders "
+></Link>
+
+<br />
+
+<Link
+  target="_blank"
+  to="https://julesblom.com/writing/react-hook-component-timeline"
+  children="3. Timeline of a React Component With Hooks"
+></Link>
+
+<Link
+  target="_blank"
+  to="https://wavez.github.io/react-hooks-lifecycle/"
+  children="4. React Hooks Lifecycle"
+></Link>
+
+</p>
+
+## 解析 React 渲染流程
+
+本文将着重于剖析 React 的渲染是如何进行的，以及分析 Context 与 React-Redux 是如何来影响渲染的。
+
+> 包含版本: React18+
+
+## TOC
+
+## 什么是 "渲染" ("Rendering") ?
+
+**“渲染”** 是 React 通知组件去生成或更新 UI 的过程，一般会基于 `props` 与 `state` 来维护数据
+
+### 渲染工作概览
+
+<Image src={react_timeline} />
+
+在整个渲染流程中，React 会从 组件树的根部 Fiber (the root of Component tree)开始向下遍历去获取**所有被标记为需要更新的**组件。
+
+React 会根据组件的类型，为每一个组件调用渲染函数，同时将其输出值存储以备下个阶段使用
+
+> 函数式组件调用自己 `FunctionComponent(props)`  
+> 类式组件调用实例上的 render 方法 `classComponentInstance.render()`
+
+组件的渲染输出一般用 JSX 语法来编写，**Babel** 会帮助你自动的调用 `React.createElement()` 方法来创建 `React elements`。
+
+> 组件的渲染输出值就是 `React elements`，是一类用以描述 UI 结构的对象
+
+如下是如何创建 `React elements` 的过程
+
+```tsx
+/**
+ * 组件创建 React elements
+ */
+// jsx 语法编写的渲染函数返回值
+return (
+  <SthToRender title="something" name="some">
+    Whatever here
+  </SthToRender>
+);
+
+// babel编译后 ---->
+return React.createElement(
+  SthToRender,
+  { title: 'something', name: 'some' },
+  'Whatever here',
+);
+
+// React.createElement方法会返回如下的对象
+{type: SthToRender, props: {title: 'something', name: 'some'}, children: ['Text Here']}
+
+// React内部调用SthToRender，进一步渲染
+let elements = SthToRender({...props, children})
+
+
+/**
+ * HTML节点创建 React elements
+ */
+return <button onClick={() => {}}>Click Me</button>
+
+// babel编译后 ---->
+React.createElement("button", {onClick}, "Click Me")
+
+// React.createElement方法会返回如下的对象
+{type: "button", props: {onClick}, children: ["Click me"]}
+
+```
+
+当 React 收集了整棵组件树的渲染返回值后， React 将比对新旧两颗树的对象，以收集被标记需要更新的节点。
+
+这个比对 (diffing) 与计算的过程被称为 协调 `reconciliation`
+
+然后 React 会在一个同步的序列中将所有计算出的结果应用到 DOM 上
+
+### 渲染阶段与提交阶段 (Render and Commit Phases)
+
+React 将 渲染工作 分为两个阶段 渲染阶段与提交阶段 (Render and Commit Phases)
+
+> - 渲染阶段 负责渲染组件，**初始化或更新非副作用 hooks**，生成 React Elements， 然后计算变化
+> - 提交阶段 负责将变化呈现在 DOM 上
+
+<Image src={react_lifecycle} />
+
+在 React 将 DOM 更新后，React 会将<Mark>所有的指向 DOM 节点或者组件实例</Mark>的`ref` 更新。
+
+在这之后，React 会同步的执行 类式组件的生命周期函数 `componentDidMount` 与 `componentDidUpdate`， 以及函数式组件的 `useLayoutEffect` hooks
+
+接着 DOM 会根据 提交阶段 提供的节点绘制页面
+
+最终 React 就会设置一个短暂的定时器，在定时器到期时，执行所有的 `useEffect` hooks<Sup title="Passive Effects Phase">注</Sup>.
+
+> 这个过程也被称为 `Passive Effects Phase`,
+> 这也是为什么 `useEffect` 会在组件**初次渲染**时会默认执行一次回调函数的原因,
+> 倘若**没有提供依赖数组**，`useEffect` 的回调函数会不断在组件更新阶段被执行
+
+理解 渲染行为 的关键就是: **渲染不等于更新 DOM**，组件渲染有可能不会有任何的可视区域的变更。
+
+比如:
+
+```tsx
+//parent Component
+
+function ParentComponent() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <button onClick={() => setCount((v) => v + 1)}> +1 </button>
+      <ChildrenComponent />
+    </div>
+  );
+}
+
+// child Component
+
+function ChildComponent() {
+  // return node
+}
+```
+
+当点击按钮触发渲染时，由于父组件进行了更新渲染，子组件也不得不进行渲染，**即使没有任何 DOM 变化**
+
+在 React 18 版本，React 添加了 并发渲染 (concurrent render) 的一些 API，比如说 <Link className="inline" target="_blank" to="https://react.dev/reference/react/useTransition#usetransition" children="useTransition"></Link>
+
+它给予 React 暂停 渲染阶段 的工作，来让浏览器去处理事件，React 随之会暂停，直到浏览器返回可使用时间超过阈值时，再继续工作。
+
+也就是说，在如下两种情况，React 的 渲染行为不会更新 DOM
+
+1. 组件返回了相同的渲染输出值<Sup title="即 React Element">注</Sup>，因此没有变化。
+2. 在 并发渲染模式 下，React 可能会终止渲染一个组件数次，但在其他的组件更新导致 React 判定现在的工作已完成的情况下，仍会抛出渲染输出值。
+
+## React 如何处理渲染？
+
+### 渲染队列
+
+在初始化渲染结束后，React 能够使用一些不同的方法来排列 更新渲染
+
+- 函数式组件
+  - `useState` setters <Sup title="即useState返回的第二个值">注</Sup>
+  - `useReducer` dispatches
+- 类式组件
+  - `this.setState()`
+  - `this.forceUpdate()`
+- 其他方式
+  - 重新调用根组件的 `render<App>` 方法 <Sup title="相当与在根组件调用forceUpdate()">注</Sup>
+  - 使用 `useSyncExternalStore` hook 中的触发器
+
+**小技巧：**
+
+> 尽管 函数式组件 没有 `forceUpdate` 方法，但是我们能通过 `useReducer` 来实现强制更新
+
+```tsx
+const [, forceRender] = useReducer((c) => c + 1, 0);
+```
+
+### 默认渲染行为
+
+**React 的默认渲染行为就是：父组件渲染，React 将深遍历并渲染其所有的子组件**
+
+一如我在上面写的案例：
+
+```tsx
+//parent Component
+
+function ParentComponent() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <button onClick={() => setCount((v) => v + 1)}> +1 </button>
+      <ChildrenComponent />
+    </div>
+  );
+}
+
+// child Component
+
+function ChildComponent() {
+  // return node
+}
+```
+
+简单来说，在默认渲染情况下，React 不会因 “Props 更新” 这一行为而重渲染子组件，是因为父组件重渲染了，所以才重渲染子组件
+
+举个极端的例子：在根组件中调用 setState，会导致整个 React 应用重新渲染，尽管大多数组件都不会更新 DOM，但是 React 仍然要处理他们的渲染，以确保 DOM 不需要更新。
+
+也就是说：
+
+**渲染行为 是 React 知道是否需要更新 DOM 的工作**
+
+### React 渲染的规则
+
+### 组件的 Metadata 与 Fibers
+
+### 组件的 Type 与 协调 (Reconciliation)
+
+### Keys 与 协调 (Reconciliation)
+
+### 渲染 批处理 (Batching) 与 时机
+
+### 异步渲染，闭包与 State 快照
+
+### 渲染行为的扩展能力
+
+---
+
+## 增强渲染性能
+
+### 组件 渲染优化 技术
+
+### 新的 props 引用 是如何影响 渲染优化 的
+
+### 优化 props 引用
+
+### 如何合理使用缓存 (useMemo, useCallback, memo)
+
+### 不可更改性 与 重新渲染
+
+### 测量 React 组件渲染性能
+
+---
+
+## Context 与 渲染行为的扩展能力
+
+### 有关 Context 的基础
+
+### 更新 Context 的值
+
+### Context 中的 State 更新导致的重新渲染行为
+
+### Context 更新 与 渲染优化
+
+---
+
+## React-Redux 与 渲染行为
+
+### React-Redux 订阅流程
+
+### connect 与 useSelector 的区别
+
+---
+
+## 将来 React 的 改进方向
+
+### `React Forget` 缓存
+
+### Context 选择器
+
+---
+
+## 总结

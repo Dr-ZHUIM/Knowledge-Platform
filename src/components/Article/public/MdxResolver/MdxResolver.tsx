@@ -1,7 +1,7 @@
 import { MessageContext } from '@/components/Layout/Layout';
 import { CopyOutlined } from '@ant-design/icons';
 import { MergeComponents } from '@mdx-js/react/lib';
-import { Image } from 'antd';
+import { Image, Tooltip } from 'antd';
 import { CompositionImage, ImageProps } from 'antd/es/image';
 import { MDXComponents } from 'mdx/types';
 import {
@@ -142,11 +142,25 @@ function Pre({ children }: PropsWithChildren) {
 }
 
 function Mark({ children }: PropsWithChildren) {
-  return <mark className={styles.mark}>{children}</mark>;
+  return <span className={styles.mark}>{children}</span>;
 }
 
 function MarkImage(props: CompositionImage<ImageProps>) {
   return <Image className="block" {...props} />;
+}
+
+function Sup({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Tooltip title={title}>
+      <sup className="cursor-pointer">{children}</sup>
+    </Tooltip>
+  );
 }
 
 export default function MdxResolver({
@@ -172,6 +186,7 @@ export default function MdxResolver({
           Anchor: Anchor,
           Link: Link,
           pre: Pre,
+          Sup: Sup,
           Image: MarkImage,
           Mark,
           ...components,
