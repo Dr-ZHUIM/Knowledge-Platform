@@ -22,7 +22,7 @@ type MenuItemProps = {
 function MenuList({ title, items, onNavigate }: MenuListProps) {
   return (
     <div className="flex-col">
-      <h3 className="text-[var(--color-primary-800)]">{title}</h3>
+      <h3 className="text-[var(--color-font)] translate-[.5s]">{title}</h3>
       <div className={`flex flex-col ${styles['menu-list']}`}>
         {items.map((item) => (
           <MenuItem
@@ -78,7 +78,7 @@ export default function Articles() {
   };
   return (
     <Article>
-      <div className="flex justify-between mb-[48px] font-bolder">
+      <div className="flex justify-between mb-[48px] font-bolder flex-wrap">
         <span className="text-[36px] ">{category}</span>
         <span className="text-[36px] ">Articles: {getArticles(menuLists)}</span>
       </div>

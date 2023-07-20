@@ -1,6 +1,7 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './index.module.scss';
+import { solveMaskMenu } from '../utils';
 
 type MaskType = {
   show: boolean;
@@ -9,27 +10,38 @@ type MaskType = {
   btnGroup?: React.ReactNode;
 };
 
-type MaskMenuType = {
-  layerLabel: string;
-  layer: Record<string, RouteT[]>;
-  onClick: (key: PostType) => void;
+type MaskItemType = {
+  label: PostType | Layer;
+  isLayerTitle: boolean;
+  layerLabel?: Layer;
+  style?: React.CSSProperties;
+  onClick?: (layerLabel: Layer, label: PostType) => void;
 };
 
-function MaskMenu({ layerLabel, layer, onClick }: MaskMenuType) {
+function MaskItem({
+  layerLabel,
+  label,
+  onClick,
+  style,
+  isLayerTitle,
+}: MaskItemType) {
   return (
-    <div className={styles['mask-menu']}>
-      <div className={styles['mask-category']}>{layerLabel}</div>
-      {layer &&
-        Object.keys(layer).map((category, index) => (
-          <div
-            onClick={() => onClick(category as PostType)}
-            className={styles['mask-item']}
-            key={category}
-          >
-            {category}
-          </div>
-        ))}
-    </div>
+    <>
+      <div
+        // Only MenuItem has onClick so that I can confirm here to use these types asserts
+        onClick={
+          onClick
+            ? () => onClick(layerLabel as Layer, label as PostType)
+            : undefined
+        }
+        className={`${
+          isLayerTitle ? styles['mask-category'] : styles['mask-item']
+        }`}
+        style={{ ...style }}
+      >
+        {label}
+      </div>
+    </>
   );
 }
 
@@ -49,6 +61,10 @@ export default function Mask({
     [onNavigate],
   );
 
+  const maskMenu = useMemo(() => {
+    return solveMaskMenu(layers);
+  }, [layers]);
+
   useEffect(() => {
     if (show) {
       document.documentElement.classList.add('overflow-hidden');
@@ -59,24 +75,38 @@ export default function Mask({
   return (
     <div
       className={`${styles['mask-container']} ${
-        show ? `${styles['mask-show']}` : `${styles['mask-hidden']}`
+        show ? 'pointer-events-auto' : 'pointer-events-none'
       }`}
     >
+      <div
+        className={`${styles['mask-bg']} ${
+          show ? `${styles['mask-show']}` : `${styles['mask-hidden']}`
+        }`}
+      ></div>
       <div className={styles['menu-container']}>
-        {layers.map(([layerLabel, layer]) => {
-          return (
-            <MaskMenu
-              onClick={(category) =>
-                toArticle(category as PostType, layerLabel)
-              }
-              key={layerLabel}
-              layerLabel={layerLabel}
-              layer={layer}
-            />
-          );
-        })}
+        {maskMenu.map((item, index) => (
+          <MaskItem
+            key={index}
+            {...item}
+            onClick={
+              !item.isLayerTitle
+                ? () => toArticle(item.label, item.layerLabel)
+                : undefined
+            }
+            style={{
+              transitionDelay: `${0.2 + index * 0.05}s`,
+              transform: show ? `translateX(0)` : `translateX(-100%)`,
+            }}
+          />
+        ))}
       </div>
-      <div className={`${styles['btn-group']}`}>{btnGroup}</div>
+      <div
+        className={`${styles['btn-group']} ${
+          show ? `${styles['mask-show']}` : `${styles['mask-hidden']}`
+        }`}
+      >
+        {btnGroup}
+      </div>
     </div>
   );
 }

@@ -8,17 +8,25 @@
   height: calc(100vh - 60px);
   width: 100%;
   padding: 20px;
+}
+
+.mask-bg {
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  inset: 0;
   background-color: var(--color-bg);
-  transition: 1s;
 }
 
 .mask-hidden {
+  transition: 1s 0.4s;
   opacity: 0;
   pointer-events: none;
 }
 
 .mask-show {
   opacity: 1;
+  transition: 1s;
 }
 
 .mask-menu {
@@ -28,6 +36,11 @@
   hr {
     margin: 0;
   }
+}
+
+.mask-category,
+.mask-item {
+  transition: 0.1s transform;
 }
 
 .mask-category {
@@ -48,4 +61,5 @@
 
 .btn-group {
   height: 20%;
+  z-index: 2;
 }

@@ -1,7 +1,8 @@
 import react_lifecycle from '@imgs/article/React/react-hook-lifecycle.png';
 import react_timeline from '@imgs/article/React/react-hook-timeline-diagram.png';
 export var label = '解析React渲染流程';
-export var summary = 'hiuhiuhi';
+export var summary =
+  '本文将着重于剖析 React 的渲染是如何进行的，以及分析 Context 与 React-Redux 是如何来影响渲染的。';
 
 # 引用说明
 
@@ -224,13 +225,181 @@ function ChildComponent() {
 
 也就是说：
 
-**渲染行为 是 React 知道是否需要更新 DOM 的工作**
+**React 是通过渲染来知道是否需要更新 DOM 的**
 
 ### React 渲染的规则
 
+对于 React 的渲染来说，最重要的就是 渲染**必须是纯函数，没有任何副作用**
+
+> 在 React 中副作用极有可能会导致额外的渲染，所以在渲染中产生副作用有可能会导致死循环，也有可能导致丢失变量。  
+> 在函数式组件内，**最高级作用域必须保证是纯函数**，hooks 则根据自己的规则来调整。  
+> 下面是类式组件的方法清单，可以大致的看一下。
+
+```tsx
+class MyComponent extends React.Component {
+  constructor() {
+    // pure
+  }
+
+  static getDerivedStateFromProps() {
+    // pure
+  }
+
+  shouldComponentUpdate() {
+    // pure
+  }
+  componentDidMount() {
+    // not pure
+  }
+  componentDidUpdate() {
+    // not pure
+  }
+  componentWillUnmount() {
+    // not pure
+  }
+  handleClick = () => {
+    // not pure
+  };
+  render() {
+    // pure
+    return <div onClick={this.handleClick} />;
+  }
+}
+```
+
+- 渲染逻辑内不应当出现的
+  - 不要尝试在下一次渲染时修改一般初始化的变量
+  - 不要创建随机值，比如 `Math.random()` 或者 `Date.now()`
+  - 不要创建网络请求<Sup title="网络请求的结果不可预测，请在hooks或者生命周期钩子里处理他们，使他们的结果产生渲染，而不是称为渲染的一部分">注</Sup>
+  - 不要更新 state<Sup title="会死循环的">注</Sup>
+- 渲染逻辑内可以出现的
+  - 修改在渲染中刚刚创建的变量
+  - 抛出错误
+  - "Lazy initialize" 懒初始化还没被创建的数据，相当于一个**被缓存在模块**<Sup title="模块被读取的时候会执行一次">注</Sup>中的值
+
+可能会对 一般初始化 和 懒初始化 产生疑惑，此处补充以下两种不借助 hooks 定义值的方法
+
+1. 一般初始化
+
+一般初始化 将变量初始化在组件内，也就是在渲染内初始化,这也意味着每一次渲染都会将这个值重新定义，而渲染结束这个值会**被存储在渲染快照中，无法修改**。
+
+```tsx
+// 一般初始化
+function MyComponent() {
+  const a = 123;
+}
+```
+
+2. 懒初始化
+
+懒初始化 将变量初始化在顶级作用域内，也就是模块内，只有启动应用的时候这个值才会被初始化，相当于缓存了一个值。
+
+```tsx
+// 懒初始化
+var cache = new Map();
+function MyComponent(props) {
+  if (!cache.has(props.id)) {
+    cache.set(props.id, function () {});
+  }
+  return cache.get(props.id);
+}
+```
+
 ### 组件的 Metadata 与 Fibers
 
+React 存储了一种内部的数据结构来追溯所有的存在的组件实例，
+这种数据结构的核心是一种被称为 "fiber" 的对象，这种架构被称为 "Fiber" 架构(注意有大写)
+
+对 fiber 的简单学习也可以参考该文章<Link target="_blank" to="https://pomb.us/build-your-own-react/">build-your-own-react</Link>
+
+fiber 对象中存储了一系列的属性，一如：
+
+- 节点的组件类型
+- 节点当前的 props 与 State
+- 指向节点的 parent,sibling,child 组件的指针
+- 以及一系列其他用于追溯渲染进程的属性
+
+这里提供一下缩减版本的 fiber 类型：
+
+```ts
+export type Fiber = {
+  // tag 用于定义fiber的类型
+  tag: WorkTag;
+
+  // 每个fiber 的唯一key
+  key: null | string;
+
+  // 用于处理该fiber节点是函数式组件还是类式组件.
+  type: any;
+
+  // Fiber架构核心，用于递归fiber tree.
+  child: Fiber | null;
+  sibling: Fiber | null;
+  index: number;
+
+  // props
+  pendingProps: any;
+  memoizedProps: any; // 用于创建React.Element的props
+
+  // state与callback更新的队列.
+  updateQueue: Array<State | StateUpdaters>;
+
+  // 用于创建React.Element的state
+  memoizedState: any;
+
+  // 这个fiber依赖的上下文或者事件
+  dependencies: Dependencies | null;
+};
+```
+
+在渲染行为的渲染阶段期间，React 会遍历 fiber 树，然后创建一个更新后的树作为渲染的结果。
+
+fiber 对象会存储组件中实际的 props 与 state 的值，也就是说当调用这些值的时候，React 实际上是给予了获取存储在 fiber 中的值
+
+而在类式组件中，`this.props` 也的确被定义，不过 React 会将这里的值复制到组件对应的 fiber 中，因此调用的仍是 fiber 中的值。
+
+换句话说：组件与 fiber 是同一个东西，组件是给程序员使用的，fiber 是给 React 使用的。
+
 ### 组件的 Type 与 协调 (Reconciliation)
+
+React 为了尽可能的有效地重渲染，会最大程度的复用已经存在的组件树与 DOM 结构。
+
+倘若在要求 React 更新在组件树上的同一个位置的统一类型的组件，React 会仅仅采用更新而不会重新创建一个节点。
+
+> React 会将渲染过的组件实例保存下来。
+
+那么 React 是怎么知道何时或者什么被改变了呢？
+
+React 会先使用 `===` 比较节点的 type, 如果一个在指定位置的节点被修改为另一个 type，比如说 `<div>` to `<span>`,
+React 会假设整棵组件树已经被修改从而加速比较过程。然后，React 将**摧毁该组件存在的组件树部分，包括所有 DOM 节点**，最终重建一棵组件树。
+
+这意味着**不要在渲染的时候创建新的组件类型！**，对于 React 来说，当用户创建了一个新的组件类型，就会导致它摧毁并重建子组件树。
+
+也就说以下的行为是性能低下的：
+
+```tsx
+function ParentComponent() {
+  function ChildComponent() {
+    return <div>Hi</div>;
+  }
+
+  return <ChildComponent />;
+}
+```
+
+对于组件 `ParentComponent` 来说，每一次都会创建新的组件类型 `ChildComponent`,React 将无法保存该组件，从而重复重建子组件树的过程
+
+所以，要记得分开定义组件
+
+```tsx
+function ChildComponent() {
+  return <div>Hi</div>;
+}
+
+function ParentComponent() {
+  return <ChildComponent />;
+}
+```
 
 ### Keys 与 协调 (Reconciliation)
 

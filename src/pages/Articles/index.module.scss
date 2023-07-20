@@ -2,11 +2,9 @@
   padding-top: 8px;
   .menu-item {
     margin-top: 48px;
-    transition: 0.3s;
     h4,
     p {
       margin: 0;
-      transition: 0.3s;
     }
     h4 {
       font-size: 1.2rem;
@@ -19,11 +17,6 @@
     p {
       font-size: 0.9rem;
       color: #aaa;
-    }
-    &:hover {
-      h4 {
-        color: var(--color-primary-800);
-      }
     }
     &:nth-child(1) {
       margin: 0;
