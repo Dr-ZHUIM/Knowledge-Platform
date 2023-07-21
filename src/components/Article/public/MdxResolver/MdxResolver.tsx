@@ -33,6 +33,7 @@ function getAnchor(node: any): string {
   }
   throw new Error('node cannot be resolved \nyour node is ' + node);
 }
+
 function Anchor({
   children,
   target,
@@ -46,7 +47,7 @@ function Anchor({
   function scrollToAnchorById(id?: string) {
     const node = id && document.getElementById(id);
     if (node) {
-      document.documentElement.scrollBy({ top: node.offsetTop - 60 });
+      document.documentElement.scrollTo({ top: node.offsetTop - 60 });
     }
   }
   return (

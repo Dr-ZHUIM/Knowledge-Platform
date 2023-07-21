@@ -22,6 +22,8 @@ export const AppContext = createContext<{
   isMobile: boolean;
 }>({ isMobile: false });
 
+// TODO: XMind Resolver
+
 function App() {
   const width = useWindowWidth();
   const [_isMobile, set_isMobile] = useState(isMobile || width <= 768);
