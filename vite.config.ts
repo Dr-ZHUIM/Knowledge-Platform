@@ -56,7 +56,7 @@ export default defineConfig({
   },
   build: {
     minify: 'terser',
-    outDir: 'build',
+    outDir: 'myblog',
     rollupOptions: {
       output: {
         format: 'es',

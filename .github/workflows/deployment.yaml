@@ -1,0 +1,62 @@
+name: Deployment
+
+on:
+  push:
+    tags:
+      - '*v'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      # build
+      - uses: actions/checkout@master
+      - name: Use Node version 16+
+        uses: actions/setup-node@master
+        with:
+          node-version: 16.19.1
+      - name: install libs
+        run: npm install
+      - name: test application
+        run: npm run test
+      - name: build application
+        run: npm run build
+      - name: tarser
+        run: tar -zcvf release.tgz myblog
+      # create release
+      - name: create release
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{secrets.TOKEN}}
+        with:
+          tag_name: ${{github.ref}}
+          release_name: Release ${{github.ref}}
+          draft: false
+          prerelease: false
+
+      # upload release
+      - name: upload release
+        id: upload_release
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{secrets.TOKEN}}
+        with:
+          upload_url: ${{steps.create_release.outputs.upload_url}}
+          asset_path: ./release.tgz
+          asset_name: release.tgz
+          asset_content_type: application/x-tgz
+
+      # deploy
+      - name: deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          password: ${{secrets.PASSWORD}}
+          port: ${{secrets.PORT}}
+          script: |
+            cd /wwwroot/test
+            wget https://github.com/Dr-ZHUIM/Knowledge-Platform/releases/latest/download/release.tgz -O release.tgz
+            tar zxvf release.tgz
