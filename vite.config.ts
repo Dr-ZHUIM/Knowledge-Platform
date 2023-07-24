@@ -34,7 +34,7 @@ export default defineConfig({
   ],
   server: {
     port: 8080,
-    open: true,
+    open: 'http://localhost:8080/blog/',
     host: '0.0.0.0',
     proxy: {},
   },
