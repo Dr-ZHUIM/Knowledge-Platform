@@ -48,7 +48,7 @@ export default defineConfig({
       'node-fetch': 'isomorphic-fetch',
     },
   },
-  base: './',
+  base: 'http://www.zhuim.fun/blog/',
   assetsInclude: ['**/*.json'],
   optimizeDeps: {
     include: ['react', 'ReactDOM', 'react-router-dom', 'typescript'],
