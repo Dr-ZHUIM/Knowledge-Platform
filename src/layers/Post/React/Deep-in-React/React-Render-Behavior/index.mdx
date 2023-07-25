@@ -389,7 +389,7 @@ React 为了尽可能的有效地重渲染，会最大程度的复用已经存�
 React 会先使用 `===` 比较节点的 type, 如果一个在指定位置的节点被修改为另一个 type，比如说 `<div>` to `<span>`,
 React 会假设整棵组件树已经被修改从而加速比较过程。然后，React 将**摧毁该组件存在的组件树部分，包括所有 DOM 节点**，最终重建一棵组件树。
 
-这意味着**不要在渲染的时候创建新的组件类型！**，对于 React 来说，当用户创建了一个新的组件类型，就会导致它摧毁并重建子组件树。
+这意味着**不要在渲染的时候创建新的组件类型！**，对于 React 来说，当开发者创建了一个新的组件类型，就会导致它摧毁并重建子组件树。
 
 也就说以下的行为是性能低下的：
 
@@ -421,7 +421,7 @@ function ParentComponent() {
 
 React 借助 `key` 这一 pseudo-prop<Sup title="虚假属性">注</Sup>, 以此来区分同一种组件的不同实例，每一个 `key` **对于这个组件类型来说**都应当是独一无二的。
 
-应当注意的是 `key` **不是一个真实的属性**，对 React 来说，`key` 只是一个提醒用的属性，会将其消除，因此**用户无法获取它**。
+应当注意的是 `key` **不是一个真实的属性**，对 React 来说，`key` 只是一个提醒用的属性，会将其消除，因此**开发者无法获取它**。
 
 一般在基于数组渲染数据时，为被遍历渲染的组件添加 `key`, 应当注意的是**最好不要使用 index 来作为 key，特别是你的功能涉及到排序、删除的时候。**
 
@@ -496,7 +496,7 @@ function KeyExample() {
 
 当 key 为 id 时，反转数组会导致组件的 key 被修改，input 作为组件的一部分，将会被重新渲染
 
-也就是说，**key 的修改会导致组件重新渲染**，用户可以通过为组件绑定一个 key，然后通过改变这个 key 而重新渲染这个组件。
+也就是说，**key 的修改会导致组件重新渲染**，开发者可以通过为组件绑定一个 key，然后通过改变这个 key 而重新渲染这个组件。
 
 <KeyExample />
 
@@ -544,7 +544,7 @@ React 18+:
 
 ### “异步”渲染，闭包与 State 快照
 
-当用户刚刚开始学习 React 时，总会犯下这样的错误：
+当开发者刚刚开始学习 React 时，总会犯下这样的错误：
 
 在尝试更新了 state 后，想要立即使用调用被修改的值，却只能获取到上一次重渲染时存储的 state 的值
 
@@ -584,13 +584,13 @@ return <div onClick={handleClick}>{counter}</div>;
 
 这是为什么呢？
 
-接下来本文将从三个层面来解释这个问题，理念层 —— State Snapshot 以及 原理层 -- React 渲染是同步还是异步的？ —— 实现层 闭包函数 Event Handler
+接下来本文将从两个层面来解释这个问题，理念层 —— State Snapshot —— 实现层 闭包函数 Event Handler
 
 #### State 快照
 
-> State 变量不像你在 JS 中可以读写的变量，它表现地更像一个快照。setState 不会修改用户已经维护好的 state，而是会触发一次重渲染 —— React 官方
+> State 变量不像你在 JS 中可以读写的变量，它表现地更像一个快照。setState 不会修改开发者已经维护好的 state，而是会触发一次重渲染 —— React 官方
 
-用户调用的 state 实际上并没有维护在组件中，state 维护在 React 内部， 当 React 调用了用户的渲染函数, 渲染函数返回的 JSX 就像 UI 当前所有 state 的快照。它的 props，Event Handler 以及 内部变量都会使用这个快照里的 state 进行运算。
+开发者调用的 state 实际上并没有维护在组件中，state 维护在 React 内部， 当 React 调用了开发者的渲染函数, 渲染函数返回的 JSX 就像 UI 当前所有 state 的快照。它的 props，Event Handler 以及 内部变量都会使用这个快照里的 state 进行运算。
 
 React 重渲染 一个组件时的流程如下：
 
@@ -598,23 +598,71 @@ React 重渲染 一个组件时的流程如下：
 2. 渲染函数返回 JSX，生成 state 的渲染快照
 3. React 更新 UI 以匹配快照
 
-也就是说，用户调用的 state 的值就是上次渲染中 state 的渲染快照，**state 只会在重渲染的时候被更新**
+也就是说，开发者调用的 state 的值就是上次渲染中 state 的渲染快照，**state 只会在重渲染的时候被更新**
 
 从这个角度来说上面两个案例的问题就是：
 
 在同一次的渲染结果中调用的 state 的值都是这个 state 的上一次的渲染快照，在没有渲染完成前都不会被改变。
 
-#### State “异步” 更新
+#### State “异步” 更新 与 EventHandler 的闭包
 
-本节讨论的异步并不是程序意义上的异步，而是指 **setState 后是否立刻进行渲染行为**
+社区中对于 State 更新的广为流传的说法是：React state 更新是异步的
 
-### 渲染行为的扩展能力
+但是，严格来说，React 渲染行为是同步的，React state 的更新会在 React 工作循环的相当尾部的部分在一个“微任务”中被执行。
+
+因此实际上讨论的异步并不是程序意义上的异步，而是指 **setState 后是否立刻进行渲染行为**
+
+那么 React 是如何做到开发者的 EventHandler 只能访问上次渲染的 state 的渲染快照的呢？
+
+原来在 React 里， 开发者的 EventHandler 是闭包函数，**它只能访问在函数建立时的变量**，也就是说当前的 EventHandler 只能访问上一次的 state 的渲染快照，而当开发者多次调用同一个 state 的 setState 时，
+这些被触发的渲染行为都被压入渲染栈中，它们被批处理后的渲染函数返回值中的 state 渲染快照会用于生成下一个 EventHandler。
+
+这也就实现了：在同一次的渲染结果中调用的 state 的值都是这个 state 的上一次的渲染快照，在没有渲染完成前都不会被改变。
+
+### 提交阶段的生命周期
+
+事实上在渲染行为的提交阶段中的生命周期函数<Sup title="比如componentDidMount, componentDidUpdate以及useLayoutEffect">注</Sup>有一些额外的作用，
+这些函数允许开发者在 React 返回新的渲染数据之后，浏览器重绘之前来处理逻辑。
+
+**即触发用户感知不到的行为**
+
+举一个例子：
+
+- 首次渲染某个 state 没有计算准确的组件(<Link target="\_blank" to="https://react.dev/reference/react/useLayoutEffect#measuring-layout-before-the-browser-repaints-the-screen">ToolTip </Link> 就是一个典型的例子)
+- 测量 DOM 节点的尺寸以此修改组件的位置
+- 基于测量，修正 state
+- 立即使用更新的数据重渲染
+
+React 会将这两次渲染在提交阶段的生命周期中**同步地**执行，因此用户看到的就是修正过后重渲染的组件。
 
 ---
 
 ## 增强渲染性能
 
+尽管渲染对于 React 生态来说是理所应当的，但是过度的渲染导致的性能浪费也是要关注的。如果一个组件的渲染输出没有改变，DOM 结构也就不会更新，那么这个组件就
+进行了不必要的渲染。
+
+**React 组件的渲染输出应当完全基于当前的 props 与当前的 state**，也就是说，当我们确认该组件在父级组件多次渲染后，渲染输出仍然保持不变时，我们就确认可以
+对它的渲染进行优化了。
+
+在程序界，优化程序有两种手段：1. 提高程序速度 2. 降低调用次数
+
+那么在 React 组件渲染这方面，我们使用第二种：在不必要的情况下，不渲染组件
+
 ### 组件 渲染优化 技术
+
+React 提供了三个主要允许开发者跳过渲染的 API, `React.memo()`,`React.component.shouldComponentUpdate()`,`React.PureComponent`;
+
+比较重要的是 `React.memo()`，它能够接受一个组件，然后返回一个被包裹的 HOC 组件，函数式组件和类式组件都可以使用这个 API。
+
+```tsx
+function MyComponent({ num }: { num: number }) {
+  return <div>{num}</div>;
+}
+export default React.memo(MyComponent);
+```
+
+这个组件会监听 props 是否有被改变，如果没有，就会避免进行重渲染。
 
 ### 新的 props 引用 是如何影响 渲染优化 的
 
