@@ -54,10 +54,40 @@ function KeyExample() {
   );
 }
 
+function ParentItem({ children }: any) {
+  const [counter, setCounter] = useState(0);
+  console.log('父组件渲染');
+  return (
+    <Demo>
+      <h3>我是父组件,渲染次数：{counter}</h3>
+      <button
+        className="btn btn-primary"
+        onClick={() => setCounter((v) => v + 1)}
+      >
+        counter:{counter}
+      </button>
+      {children}
+    </Demo>
+  );
+}
+
+function ChildItem() {
+  console.log('子组件渲染');
+  return <div>我是子组件</div>;
+}
+
+function ParentAndChildDemo() {
+  return (
+    <ParentItem>
+      <ChildItem />
+    </ParentItem>
+  );
+}
+
 export default function ReactRenderBehavior() {
   return (
     <Article>
-      <MdxResolver TC={mdx} components={{ KeyExample }} />
+      <MdxResolver TC={mdx} components={{ KeyExample, ParentAndChildDemo }} />
     </Article>
   );
 }

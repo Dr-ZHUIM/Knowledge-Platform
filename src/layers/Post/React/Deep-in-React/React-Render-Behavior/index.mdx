@@ -129,12 +129,12 @@ React.createElement("button", {onClick}, "Click Me")
 
 然后 React 会在一个同步的序列中将所有计算出的结果应用到 DOM 上
 
-### 渲染阶段与提交阶段 (Render and Commit Phases)
+### 渲染阶段 与 提交阶段 (Render and Commit Phases)
 
-React 将 渲染工作 分为两个阶段 渲染阶段与提交阶段 (Render and Commit Phases)
+React 将 渲染工作 分为两个阶段 渲染阶段 与 提交阶段 (Render and Commit Phases)<Sup title="下文统一使用英文Render and Commit Phases">注</Sup>
 
-> - 渲染阶段 负责渲染组件，**初始化或更新非副作用 hooks**，生成 React Elements， 然后计算变化
-> - 提交阶段 负责将变化呈现在 DOM 上
+> - Render Phase 负责渲染组件，**初始化或更新非副作用 hooks**，生成 React Elements， 然后计算变化
+> - Commit Phase 负责将变化呈现在 DOM 上
 
 <Image src={react_lifecycle} />
 
@@ -142,7 +142,7 @@ React 将 渲染工作 分为两个阶段 渲染阶段与提交阶段 (Render an
 
 在这之后，React 会同步的执行 类式组件的生命周期函数 `componentDidMount` 与 `componentDidUpdate`， 以及函数式组件的 `useLayoutEffect` hooks
 
-接着 DOM 会根据 提交阶段 提供的节点绘制页面
+接着 DOM 会根据 Commit Phase 提供的节点绘制页面
 
 最终 React 就会设置一个短暂的定时器，在定时器到期时，执行所有的 `useEffect` hooks<Sup title="Passive Effects Phase">注</Sup>.
 
@@ -178,7 +178,7 @@ function ChildComponent() {
 
 在 React 18 版本，React 添加了 并发渲染 (concurrent render) 的一些 API，比如说 <Link className="inline" target="_blank" to="https://react.dev/reference/react/useTransition#usetransition" children="useTransition"></Link>
 
-它给予 React 暂停 渲染阶段 的工作，来让浏览器去处理事件，React 随之会暂停，直到浏览器返回可使用时间超过阈值时，再继续工作。
+它给予 React 暂停 Render Phase 的工作，来让浏览器去处理事件，React 随之会暂停，直到浏览器返回可使用时间超过阈值时，再继续工作。
 
 也就是说，在如下两种情况，React 的 渲染行为不会更新 DOM
 
@@ -368,7 +368,7 @@ export type Fiber = {
 };
 ```
 
-在渲染行为的渲染阶段期间，React 会遍历 fiber 树，然后创建一个更新后的树作为渲染的结果。
+在渲染行为的 Render Phase 期间，React 会遍历 fiber 树，然后创建一个更新后的树作为渲染的结果。
 
 fiber 对象会存储组件中实际的 props 与 state 的值，也就是说当调用这些值的时候，React 实际上是给予了获取存储在 fiber 中的值
 
@@ -619,9 +619,9 @@ React 重渲染 一个组件时的流程如下：
 
 这也就实现了：在同一次的渲染结果中调用的 state 的值都是这个 state 的上一次的渲染快照，在没有渲染完成前都不会被改变。
 
-### 提交阶段的生命周期
+### Commit Phase 的生命周期
 
-事实上在渲染行为的提交阶段中的生命周期函数<Sup title="比如componentDidMount, componentDidUpdate以及useLayoutEffect">注</Sup>有一些额外的作用，
+事实上在渲染行为的 Commit Phase 中的生命周期函数<Sup title="比如componentDidMount, componentDidUpdate以及useLayoutEffect">注</Sup>有一些额外的作用，
 这些函数允许开发者在 React 返回新的渲染数据之后，浏览器重绘之前来处理逻辑。
 
 **即触发用户感知不到的行为**
@@ -633,7 +633,7 @@ React 重渲染 一个组件时的流程如下：
 - 基于测量，修正 state
 - 立即使用更新的数据重渲染
 
-React 会将这两次渲染在提交阶段的生命周期中**同步地**执行，因此用户看到的就是修正过后重渲染的组件。
+React 会将这两次渲染在 Commit Phase 的生命周期中**同步地**执行，因此用户看到的就是修正过后重渲染的组件。
 
 ---
 
@@ -662,13 +662,227 @@ function MyComponent({ num }: { num: number }) {
 export default React.memo(MyComponent);
 ```
 
-这个组件会监听 props 是否有被改变，如果没有，就会避免进行重渲染。
+这个组件除去自己的 state 变化以外，会监听 props 是否有被改变，如果没有，就会避免进行重渲染。
 
-### 新的 props 引用 是如何影响 渲染优化 的
+`React.component.shouldComponentUpdate()` 则是一个可选择的类式组件生命周期钩子函数，它会在 Render Phase 较早的阶段被调用，如果其返回值为 false，则会阻止本组件的重渲染
+因此，该 API 的主要使用方式就是通过处理逻辑，返回一个布尔值来告知 React 是否要重渲染这个组件
 
-### 优化 props 引用
+`React.PureComponent` 是一种类式组件，它默认的拥有监听 state 或者 props 是否改变来决定是否重渲染组件的能力，因此可以用来替代 `Component + shouldComponentUpdate` 的方案。
+
+以上的三个 API 建立了一个等式，`const shouldRender = !shallowEqual(newProps, prevProps)`,其中的 `shallowEqual`指的是**浅比较**这是一种用于比较对象是否相等的办法：
+
+它会将两个对象的属性一一对应的全等比较，如果不符合则返回 false，故若属性中有对象，会根据引用地址来决定是否全等。
+
+```ts
+// 假设我们拥有函数 shallowEqual
+
+const obj1A = { a: 1, b: 2 };
+const obj1B = { a: 1, b: 2 };
+const result1 = shallowEqual(obj1A, obj1B); // true => obj1A.a === obj1B.a && obj1A.b === obj1B.b
+
+const obj2A = { a: { a: 1 } };
+const obj2B = { a: { a: 1 } };
+const result1 = shallowEqual(obj1A, obj1B); // false 两个对象中的a的引用地址不同
+```
+
+除此以外，还有两种方式来进行渲染。
+
+直接调用子组件的渲染输出的话，那么父组件的 state 更新也不会影响子组件的渲染
+
+1. 如果你的组件的 props 为 `PropsWithChildren`,这里会直接调用 children 的渲染输出，而不是组件
+
+2. 你可以在组件内部用 useMemo 缓存一个组件，然后直接调用它，这也相当于调用了内部组件的渲染输出，同时这种手段可以在父组件内通过 useMemo 的依赖来手动更新子组件
+
+```tsx
+function SomeProvider({ children }) {
+  const [counter, setCounter] = useState(0);
+
+  return (
+    <div>
+      <button onClick={() => setCounter(counter + 1)}>Count: {counter}</button>
+      <OtherChildComponent />
+      {children}
+    </div>
+  );
+}
+
+function OptimizedParent() {
+  const [counter1, setCounter1] = useState(0);
+  const [counter2, setCounter2] = useState(0);
+
+  // 此处的组件只会因counter1改变而重渲染
+  const memoizedElement = useMemo(() => {
+    return <ExpensiveChildComponent />;
+  }, [counter1]);
+
+  return (
+    <div>
+      <button onClick={() => setCounter1(counter1 + 1)}>
+        Counter 1: {counter1}
+      </button>
+      <button onClick={() => setCounter1(counter2 + 1)}>
+        Counter 2: {counter2}
+      </button>
+      {memoizedElement}
+    </div>
+  );
+}
+```
+
+<ParentAndChildDemo />
+
+### 修改 props 对渲染行为的影响
+
+正如上文提到的：
+
+> 在默认渲染情况下，React 不会因 “Props 更新” 这一行为而重渲染子组件，是因为父组件重渲染了，所以才重渲染子组件
+
+这意味这在开发者**在没有做子组件渲染优化的情况下**，不用关心 更新 props 是否会带来重渲染
+
+看个例子：
+
+```tsx
+function ParentComponent() {
+  const onClick = () => {
+    console.log('Button clicked');
+  };
+
+  const data = { a: 1, b: 2 };
+
+  return <NormalChildComponent onClick={onClick} data={data} />;
+}
+```
+
+这里的父组件每次渲染时都会生成新的函数 `onClick` 与新的变量 `data` , 但这并不关键，因为子组件没有使用 memo 维护，父组件重渲染时会将子组件进行重渲染，
+
+然而，如果子组件只想在 props 修改的情况下进行重渲染，那么 props 的更新就应当注意了
+
+同样的例子：
+
+```tsx
+const MemoizedChildComponent = React.memo(ChildComponent);
+
+function ParentComponent() {
+  const onClick = () => {
+    console.log('Button clicked');
+  };
+
+  const data = { a: 1, b: 2 };
+
+  return <MemoizedChildComponent onClick={onClick} data={data} />;
+}
+```
+
+父组件每次渲染时都会生成新的函数 `onClick` 与新的变量 `data`，由于 React 对于 props 是浅比较，这两个值属于引用类型的值，引用地址变了，故子组件将会重渲染。
+
+这会导致子组件的优化失效。
+
+### 优化 props 引用类型属性
+
+类式组件的风险并不大，因为其定义的变量的地址恒定为 instance.xxx
+
+对于函数式组件，React 提供了两个 hook 来解决这些问题：`useMemo`, `useCallback`
+
+- useMemo 用于缓存任意需要复杂运算的值或者一个引用地址
+- useCallback 是 useMemo 的语法糖，专用于缓存一个函数
 
 ### 如何合理使用缓存 (useMemo, useCallback, memo)
+
+正如上文的案例比较，不是所有情况都需要用到缓存技术，缓存本身也有性能损耗。
+
+在官方文章<Link target="_blank" to="hhttps://react.dev/reference/react/memo#skipping-re-rendering-when-props-are-unchanged" children='the new React docs specifically address the "memo everything?" question'></Link>如是提到：
+
+> **Optimizing with memo is only valuable when your component re-renders often with the same exact props, and its re-rendering logic is expensive.** If there is no perceptible lag when your component re-renders, memo is unnecessary. Keep in mind that memo is completely useless if the props passed to your component are always different, such as if you pass an object or a plain function defined during rendering. This is why you will often need useMemo and useCallback together with memo.
+>
+> There is no benefit to wrapping a component in memo in other cases. There is no significant harm to doing that either, so some teams choose to not think about individual cases, and memoize as much as possible. The downside of this approach is that code becomes less readable. Also, not all memoization is effective: a single value that’s “always new” is enough to break memoization for an entire component.
+
+对于 `memo` 来说, 只要没有出现父组件因相同的值导致多次渲染，同时**子组件的重渲染逻辑运算量很大**，那么就不必要使用。
+
+可以看一下我在本站使用的一个 Demo 的案例：
+
+```tsx
+function get32Bit(num: number) {
+  if (Object.is(num, NaN)) {
+    return chunkBit(fill(Array(32), 0));
+  }
+  const bitArray = num >= 0 ? fill(Array(32), 0) : fill(Array(32), 1);
+  let _num = Math.abs(num >= 0 ? Math.floor(num) : Math.round(num) + 1);
+  for (let i = 1; _num != 0; i++) {
+    bitArray[bitArray.length - i] = CalcBit(_num, num < 0);
+    _num = Math.floor(_num / 2);
+  }
+  return chunkBit(bitArray);
+}
+
+function BitExposer({ num, style, className }: BitExposerType) {
+  return (
+    <div
+      className={`${styles.bitExposer}${className && ' ' + className}`}
+      style={{
+        fontFamily: 'monospace',
+        ...style,
+      }}
+    >
+      {get32Bit(num)}
+    </div>
+  );
+}
+
+export default React.memo(BitExposer);
+```
+
+组件 `BitExposer` 每次渲染时都会重新计算 `get32Bit(num)`, 该函数较为昂贵，故使用 memo 将该组件封装。
+
+useMemo 与 useCallback 同理，它们的使用情况如下：
+
+1. 依赖项修改后，需要复杂的计算才能得到这个值
+2. 将一个组件包含在内，以此避免该组件因父组件的 state 更新而重渲染
+3. 缓存一个其他 Hook 需要的引用地址
+4. 缓存一个因变量
+
+情况一与二，上文都有提及，这里不再复述
+
+用一个例子来表现情况三与四
+
+```tsx
+function Dropdown({ allItems, text }) {
+  const searchOptions = { matchMode: 'whole-word', text };
+
+  const visibleItems = useMemo(() => {
+    return searchItems(allItems, searchOptions);
+  }, [allItems, searchOptions]); // 🚩 注意：依赖于该组件内的一个对象，该对象会不断重新创建，故这里的缓存没有意义
+  // ...
+}
+```
+
+这里对 searchOptions 使用 useMemo 缓存，这样可以维护其引用地址, 此时满足情况三
+
+```tsx
+function Dropdown({ allItems, text }) {
+  const searchOptions = useMemo(() => {
+    return {
+      matchMode: 'whole-word', text;
+    }
+  }, [text]); // ✅ 只有text更新，searchOptions才会更新
+
+  const visibleItems = useMemo(() => {
+    return searchItems(allItems, searchOptions);
+  }, [allItems, searchOptions]); // ✅  只有allItems和searchOptions更新，visibleItems才会更新
+  // ...
+}
+```
+
+我们对这个内容进一步重构，可以将 searchOptions 提到 visibleItems 中，将 text 作为依赖加入
+
+```tsx
+function Dropdown({ allItems, text }) {
+  const visibleItems = useMemo(() => {
+    const searchOptions = { matchMode: 'whole-word', text };
+    return searchItems(allItems, searchOptions);
+  }, [allItems, text]); // ✅  只有allItems和text更新，visibleItems才会更新
+  // ...
+}
+```
 
 ### 不可更改性 与 重新渲染
 
