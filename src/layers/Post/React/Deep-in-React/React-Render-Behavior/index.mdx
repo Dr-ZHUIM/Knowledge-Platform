@@ -884,15 +884,104 @@ function Dropdown({ allItems, text }) {
 }
 ```
 
-### 不可更改性 与 重新渲染
+### 创建新的值来要求 React 重渲染
 
-### 测量 React 组件渲染性能
+在 React 中更新 state 应当避免直接修改 state,有两大原因阻止开发者如此做：
+
+- 对 React 来说，直接修改 state 可能会导致 React 在该重渲染的逻辑中不渲染
+- 对开发者来说，直接修改 state 可能会导致对“为什么这里要重渲染”， “什么时候要重渲染”感到困惑
+
+就是说这样的行为应当被禁止：
+
+```tsx
+const [todos, setTodos] = useState(someTodosArray);
+
+const onClick = () => {
+  //直接修改state
+  todos[3].completed = true;
+  //由于引用地址没变，react不会重渲染
+  setTodos(todos);
+};
+```
+
+一起来看几个案例：
+
+在 React 中，React.memo / PureComponent / shouldComponentUpdate 都依赖浅比较 props 是否不同，引用类型比较的是引用地址，倘若直接修改值，React 将不能感知 props 变化。
+
+在函数式组件中，在 useState 与 useReducer hooks 的使用上，当调用 setState 或者 dispatch 时，React 会将渲染请求放入渲染队列，然而 React 会使用 Differ 算法检测传入的值是否有新的引用地址，
+倘若是同一个引用地址，React 将跳过该渲染请求，从而导致组件渲染失败。
+
+在类式组件中，调用 this.setState 会完成重渲染，然而引用地址不变会让 React 认为是`this.setState({})`，也就没有任何 State 被更新了
+
+这里贴一下 React 源码
+
+```ts
+function dispatchSetState<S, A>(
+  fiber: Fiber,
+  queue: UpdateQueue<S, A>,
+  action: A,
+) {
+  // ...
+
+  // The queue is currently empty, which means we can eagerly compute the
+  // next state before entering the render phase. If the new state is the
+  // same as the current state, we may be able to bail out entirely.
+  const lastRenderedReducer = queue.lastRenderedReducer;
+  if (lastRenderedReducer !== null) {
+    let prevDispatcher;
+    if (__DEV__) {
+      prevDispatcher = ReactCurrentDispatcher.current;
+      ReactCurrentDispatcher.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
+    }
+    try {
+      const currentState: S = (queue.lastRenderedState: any);
+      const eagerState = lastRenderedReducer(currentState, action);
+      // Stash the eagerly computed state, and the reducer used to compute
+      // it, on the update object. If the reducer hasn't changed by the
+      // time we enter the render phase, then the eager state can be used
+      // without calling the reducer again.
+      update.hasEagerState = true;
+      update.eagerState = eagerState;
+      if (is(eagerState, currentState)) {
+        // Fast path. We can bail out without scheduling React to re-render.
+        // It's still possible that we'll need to rebase this update later,
+        // if the component re-renders for a different reason and by that
+        // time the reducer has changed.
+        return;
+      }
+    }
+  }
+  //...
+}
+```
+
+此处的 eagerState 就是上次的 state 的渲染快照，react 比较两个值如果相等，那么就会直接 return，不再渲染。
+
+所以应当写这样的代码：
+
+```tsx
+const [todos, setTodos] = useState(someTodosArray);
+
+const onClick = () => {
+  //创建一个新的引用地址
+  const newTodos = [...todos];
+  newTodos[3].completed = true;
+  //由于引用地址变了，react重渲染
+  setTodos(newTodos);
+};
+```
+
+应当牢记：**React 系统中要避免直接修改原数值，这会导致不可预测的 bug**
 
 ---
 
 ## Context 与 渲染行为的扩展能力
 
-### 有关 Context 的基础
+本节将讲述 Context 对于渲染行为的影响，但是在那之前，先简单介绍一下 Context 系统
+
+在 React 的 Context API 是一个用于在开发者限定的组件树范围内共享值的通道，以此避免多层的 props 传入。
+
+应当注意：**Context 不是 State 管理工具**，State 由开发者自己维护，Context 只负责数据流的传输。
 
 ### 更新 Context 的值
 
