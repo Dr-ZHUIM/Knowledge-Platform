@@ -985,9 +985,106 @@ const onClick = () => {
 
 ### 更新 Context 的值
 
+React 会查验 context 的值是否被改变，这意味着如果你的值是一个引用类型，也要按照上文提及的**创建新值**的原则来更新。
+
+当 React 认定 context provider 的 value 值被改变后，React 会将所有使用该 context 的组件重渲染。
+
+举个例子：
+
+```tsx
+function GrandchildComponent() {
+  const value = useContext(MyContext);
+  return <div>{value.a}</div>;
+}
+
+function ChildComponent() {
+  return <GrandchildComponent />;
+}
+
+function ParentComponent() {
+  const [a, setA] = useState(0);
+  const [b, setB] = useState('text');
+
+  const contextValue = { a, b };
+
+  return (
+    <MyContext.Provider value={contextValue}>
+      <ChildComponent />
+    </MyContext.Provider>
+  );
+}
+```
+
+这里 ParentComponent 每次渲染时都会创建一个新的 contextValue，这对 context 来说意味着新的值，那么所有使用这 context 的组件都将被强制重渲染。
+
 ### Context 中的 State 更新导致的重新渲染行为
 
+现在，我们将一些 React 的行为整理一下：
+
+- 1.调用 setState 会产生组件的渲染队列
+- 2.React 会默认地递归渲染所有子级组件
+- 3.context provider 获得的值来自于组件渲染后的 state 快照
+- 4.这个 state 来自于 context provider 下所有子组件的父组件
+
+由 4 和 2 可以推出，**在默认情况下，React 不会关心 context 的值是否更新，因为父组件更新 state，会导致子组件强制重渲染。**
+
+我们回顾之前的例子，GrandchildComponent 的重渲染不是因为 context 的值改变，而是因为 ChildComponent 的渲染。
+
+在这里，我们没有尝试优化不必要的渲染，因此 ParentComponent 的渲染会默认导致 ChildComponent 与 GrandchildComponent 的组件重渲染。
+
+context 值的更新没有触发渲染，因为 ParentComponent 的子组件一定会在默认渲染行为下重渲染。
+
 ### Context 更新 与 渲染优化
+
+现在就让我们将上面的案例优化一下，同时添加一个新的祖祖子组件 GreatGrandchildComponent
+
+```tsx
+function GreatGrandchildComponent() {
+  return <div>Hi</div>;
+}
+
+function GrandchildComponent() {
+  const value = useContext(MyContext);
+  return (
+    <div>
+      {value.a}
+      <GreatGrandchildComponent />
+    </div>
+  );
+}
+
+function ChildComponent() {
+  return <GrandchildComponent />;
+}
+
+const MemoizedChildComponent = React.memo(ChildComponent);
+
+function ParentComponent() {
+  const [a, setA] = useState(0);
+  const [b, setB] = useState('text');
+
+  const contextValue = { a, b };
+
+  return (
+    <MyContext.Provider value={contextValue}>
+      <MemoizedChildComponent />
+    </MyContext.Provider>
+  );
+}
+```
+
+现在假设我们触发 ParentComponent 中的 setState
+
+- ParentComponent 重渲染
+- 一个新的 引用类型 值被生成
+- React 发现 context 值被改变，所有该 context 的使用者组件需要重渲染
+- React 先根据默认渲染行为来渲染 MemoizedChildComponent，发现有 memo 包裹，因为没有 props 更新，故不会重渲染
+- React 再根据 context 值改变来渲染使用这组件，向下寻找到 GrandchildComponent，将其重渲染
+- React 根据默认渲染行为 重渲染 GrandchildComponent 的子组件 GreatGrandchildComponent
+
+从这个被优化的案例，不难看出：
+
+**在 context.Provider 下的顶级组件应当使用 React.memo**
 
 ---
 

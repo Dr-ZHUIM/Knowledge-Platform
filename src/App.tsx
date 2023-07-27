@@ -27,6 +27,11 @@ export const AppContext = createContext<{
 function App() {
   const width = useWindowWidth();
   const [_isMobile, set_isMobile] = useState(isMobile || width <= 768);
+  const mobileState = useMemo(() => {
+    console.log(123123);
+
+    return { isMobile: _isMobile };
+  }, [_isMobile]);
   useEffect(() => {
     isMobile || width <= 768 ? set_isMobile(true) : set_isMobile(false);
   }, [width, isMobile]);
@@ -36,7 +41,7 @@ function App() {
   }, []);
 
   return (
-    <AppContext.Provider value={{ isMobile: _isMobile }}>
+    <AppContext.Provider value={mobileState}>
       <Layout>
         <Routes>
           {routers}
