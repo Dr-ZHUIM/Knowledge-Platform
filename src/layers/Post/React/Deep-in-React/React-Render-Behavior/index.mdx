@@ -1088,20 +1088,13 @@ function ParentComponent() {
 
 ---
 
-## React-Redux 与 渲染行为
-
-### React-Redux 订阅流程
-
-### connect 与 useSelector 的区别
-
----
-
-## 将来 React 的 改进方向
-
-### `React Forget` 缓存
-
-### Context 选择器
-
----
-
 ## 总结
+
+- React 默认会递归渲染组件，因此父组件渲染，子组件也会渲染
+- 渲染行为是 React 知晓 DOM 需要更改的方法
+- 渲染行为有性能消耗，过量的无用渲染是糟糕的
+- 使用 React.memo 可以保证组件在 props 没有更改时不被默认渲染行为影响
+- props 使用浅比较，因此跟踪的是值，需要更新对象类型的 props，要传入新的引用地址。
+- Context 是用于传输数据的管道
+- Context.Provider 的属性 value 跟踪的是值，需要更新对象类型的 value，要传入新的引用地址。
+- 建议将 Context 的顶级子元素使用 React.memo 维护起来，以此避免默认渲染行为
