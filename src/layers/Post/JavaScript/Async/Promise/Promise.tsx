@@ -2,7 +2,7 @@ import Article from '@/components/Article/Article';
 import Mdx from './index.mdx';
 import MdxResolver from '@/components/Article/public/MdxResolver/MdxResolver';
 
-export const label = 'Promise';
+export { label, summary } from './index.mdx';
 
 export default function Promise() {
   return (
