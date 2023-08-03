@@ -5,6 +5,8 @@ promise 是一个拥有 then 方法的对象或函数`;
 
 # Promise
 
+Promise 是一个函数返回的对象，代表异步操作的最终结果
+
 ## 知识前提
 
 ### 事件循环
@@ -66,11 +68,108 @@ test();
 
 ---
 
+## Promise 原理
+
+本文将 Promise 的状态分为两个状态：处理态与状态
+
+处理态是指 Promise 是否处于 resolved，意指 Promise 的状态 是否被修改
+
+状态是指 Promise 的 pending、fulfilled、rejected 三个状态
+
+## Promise 流程
+
+以下是典型的 Promise 流程概述：
+
+1. 在构造函数生成新的 Promise 对象时，它还会生成一对相应的 resolveFunc 和 rejectFunc 函数；它们与 Promise 对象“绑定”在一起。
+
+2. executor 通常会封装某些提供基于回调的 API 的异步操作。回调函数（传给原始回调 API 的函数）在 executor 代码中定义，因此它可以访问 resolveFunc 和 rejectFunc。
+
+3. executor 是同步调用的（在构造 Promise 时立即调用），并将 resolveFunc 和 rejectFunc 函数作为传入参数。
+
+4. executor 中的代码有机会执行某些操作。异步任务的最终完成通过 resolveFunc 或 rejectFunc 引起的副作用与 Promise 实例进行通信。这个副作用让 Promise 对象变为 resolved 状态。
+
+   1. 如果先调用 resolveFunc，则传入的值将解决。Promise 可能会保持 pedding（如果传入了另一个 thenable 对象），变为 fulfilled 状态（在传入非 thenable 值的大多数情况下），或者变为 rejected 状态（在解析值无效的情况下）。
+
+   2. 如果先调用 rejectFunc，Promise 立即变为 rejected 状态
+
+5. 一旦一个处理状态的函数被调用后，Promise 的处理态将被锁定
+
 ## Promise 构建函数
+
+Promise() 构造函数创建 Promise 对象。它主要用于封装尚未支持 Promise 的基于回调的 API。
+
+抽象态语法：
+
+```ts
+new Promise(executor);
+
+function executor(resolveFunc, rejectFunc) {
+  // 通常，`executor` 函数用于封装某些接受回调函数作为参数的异步操作
+}
+```
+
+实例：
+
+```ts
+const promise1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('foo');
+  }, 300);
+});
+
+promise1.then((value) => {
+  console.log(value);
+  // Expected output: "foo"
+});
+
+console.log(promise1);
+// Expected output: [object Promise]
+```
+
+executor 中抛出的任何错误都会导致 Promise 被拒绝，并且返回值将被忽略。
+
+当通过 new 关键字调用 Promise 构造函数时，它会返回一个 Promise 对象。当 `resolveFunc` 或者 `rejectFunc` 被调用时
+该 Promise 对象的状态变更为 resolved
+
+`resolveFunc` 和 `rejectFunc` 都是函数
+
+```ts
+resolveFunc(value); // 解决时调用
+rejectFunc(reason); // 拒绝时调用
+```
+
+传入 resolveFunc 的 value 参数可以是另一个 Promise 对象，在这种情况下，新构造的 Promise 对象的状态将“锁定”到传入的 Promise 对象（作为 resolution Promise 的一部分）。
+
+rejectFunc 的语义类似于 throw 语句，因此 reason 通常是一个 Error 实例。
+
+倘若调用时不传入值，Promise 的 fulfilled 或者 rejected 的值为 **undefined**
 
 ---
 
 ## Promise.then
+
+Promise 实例的 then() 方法最多接受两个参数：用于 Promise fulfilled 和 rejected 情况的回调函数。
+它立即返回一个等效的 Promise 对象，允许你链接到其他 Promise 方法，从而实现链式调用。
+
+抽象态语法：
+
+```ts
+then(onFulfilled);
+then(onFulfilled, onRejected);
+```
+
+实例：
+
+```ts
+const promise1 = new Promise((resolve, reject) => {
+  resolve('Success!');
+});
+
+promise1.then((value) => {
+  console.log(value);
+  // Expected output: "Success!"
+});
+```
 
 ---
 
