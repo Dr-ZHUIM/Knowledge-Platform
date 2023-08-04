@@ -28,8 +28,6 @@ function App() {
   const width = useWindowWidth();
   const [_isMobile, set_isMobile] = useState(isMobile || width <= 768);
   const mobileState = useMemo(() => {
-    console.log(123123);
-
     return { isMobile: _isMobile };
   }, [_isMobile]);
   useEffect(() => {

@@ -55,7 +55,7 @@ function test() {
 test();
 ```
 
-即使定时器的延迟只有 0，也需要等待 test 所在的任务执行完后才能执行，因此 sayHello 的最终延迟时间是比设定时间大的。
+即使定时器的延迟只有 0，也需要等待 test 所在的任务执行完后才能执行，同时不同的浏览器会有默认的最小定时器延迟时间<Sup title="如chrome为4ms">注</Sup>,因此 sayHello 的最终延迟时间是比设定时间大的。
 
 #### 宏任务与微任务
 
@@ -72,9 +72,23 @@ test();
 
 本文将 Promise 的状态分为两个状态：处理态与状态
 
-处理态是指 Promise 是否处于 resolved，意指 Promise 的状态 是否被修改
+处理态是指 Promise 是否处于 settled, 即 Promise 的状态 是否被修改
 
 状态是指 Promise 的 pending、fulfilled、rejected 三个状态
+
+一个 Promise 是一个代理，它代表一个在创建 promise 时不一定已知的值。它允许你将处理程序与异步操作的最终成功值或失败原因关联起来。这使得异步方法可以像同步方法一样返回值：异步方法不会立即返回最终值，而是返回一个 promise，以便在将来的某个时间点提供该值。
+
+一个 Promise 必然处于以下几种状态之一：
+
+1. pending:初始状态
+
+2. fulfilled:意味着操作成功完成。
+
+3. rejecte:意味着操作失败。
+
+一个处于 pending 状态的 Promise 最终状态可以是 fulfilled 并返回一个 value，或者是 rejected 并返回一个 reason。
+当其中任意一种情况发生时，通过 Promise 的 then 方法串联的处理程序将被调用。如果绑定相应处理程序时 Promise 已经兑现或拒绝，
+这处理程序将被立即调用，因此在异步操作完成和绑定处理程序之间不存在竞态条件。
 
 ## Promise 流程
 
@@ -86,7 +100,7 @@ test();
 
 3. executor 是同步调用的（在构造 Promise 时立即调用），并将 resolveFunc 和 rejectFunc 函数作为传入参数。
 
-4. executor 中的代码有机会执行某些操作。异步任务的最终完成通过 resolveFunc 或 rejectFunc 引起的副作用与 Promise 实例进行通信。这个副作用让 Promise 对象变为 resolved 状态。
+4. executor 中的代码有机会执行某些操作。异步任务的最终完成通过 resolveFunc 或 rejectFunc 引起的副作用与 Promise 实例进行通信。这个副作用让 Promise 对象变为 settled 处理态。
 
    1. 如果先调用 resolveFunc，则传入的值将解决。Promise 可能会保持 pedding（如果传入了另一个 thenable 对象），变为 fulfilled 状态（在传入非 thenable 值的大多数情况下），或者变为 rejected 状态（在解析值无效的情况下）。
 
@@ -129,7 +143,7 @@ console.log(promise1);
 executor 中抛出的任何错误都会导致 Promise 被拒绝，并且返回值将被忽略。
 
 当通过 new 关键字调用 Promise 构造函数时，它会返回一个 Promise 对象。当 `resolveFunc` 或者 `rejectFunc` 被调用时
-该 Promise 对象的状态变更为 resolved
+该 Promise 对象的处理态变更为 settled
 
 `resolveFunc` 和 `rejectFunc` 都是函数
 
@@ -148,7 +162,11 @@ rejectFunc 的语义类似于 throw 语句，因此 reason 通常是一个 Error
 
 ## Promise.then
 
-Promise 实例的 then() 方法最多接受两个参数：用于 Promise fulfilled 和 rejected 情况的回调函数。
+then 方法用于为 Promise 对象的 settled 处理态 设置回调函数。
+
+thenable 协议要求所有类 Promise 对象都提供一个 then() 方法，并且 catch() 和 finally() 方法都会通过调用该对象的 then() 方法来工作。
+
+then 最多接受两个参数：用于 Promise fulfilled 和 rejected 情况的回调函数。
 它立即返回一个等效的 Promise 对象，允许你链接到其他 Promise 方法，从而实现链式调用。
 
 抽象态语法：
@@ -171,16 +189,79 @@ promise1.then((value) => {
 });
 ```
 
+then 方法的参数 `onFulfilled` 与 `onRejected` 都属于回调函数，各自接受相应状态的值<Sup title="即value与reason">注</Sup>
+
+then 会返回一个 Promise,下称为 p，Promise 的状态与值由 `onFulfilled` 或者 `onRejected`的返回值决定：
+
+1. 返回一个值：p 以该返回值作为其 fulfilled 值。
+2. 没有返回任何值：p 以 undefined 作为其 fulfilled 值。
+3. 抛出一个错误：p 抛出的错误作为其 rejected 值。
+4. 返回一个 fulfilled 的 Promise 对象：p 以该 Promise 的值作为其 fulfilled 值。
+5. 返回一个 rejected 的 Promise 对象：p 以该 Promise 的值作为其 rejected 值。
+6. 返回另一个 pending 的 Promise 对象：p 保持待定状态，并在该 Promise 对象被 fulfilled/rejected 后立即以该 Promise 的值作为其 fulfilled/rejected 值。
+
+> 在实践中，通常更希望使用 catch() 方法来捕获被拒绝的 Promise，而不是使用 then() 方法传入两个处理器的语法。
+
 ---
 
 ## Promise.catch
+
+Promise 实例的 catch() 方法用于注册一个在 promise 处于 rejected 状态时调用的函数。它会立即返回一个等效的 Promise 对象，这可以允许你链式调用其他 promise 的方法。
+此方法是 Promise.prototype.then(undefined, onRejected) 的一种简写形式。
+
+抽象态语法：
+
+```ts
+catch(onRejected)
+```
+
+实例：
+
+```ts
+const promise1 = new Promise((resolve, reject) => {
+  throw new Error('Uh-oh!');
+});
+
+promise1.catch((error) => {
+  console.error(error);
+});
+// Expected output: Error: Uh-oh!
+```
 
 ---
 
 ## Promise.finally
 
----
+Promise 实例的 finally() 方法用于注册一个在 promise 处理态为 settled 时调用的函数。它会立即返回一个等效的 Promise 对象，这可以允许你链式调用其他 promise 方法。
 
-## Promise.all
+抽象态语法：
+
+```ts
+finally(onFinally)
+```
+
+实例：
+
+```ts
+let isLoading = true;
+
+fetch(myRequest)
+  .then((response) => {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return response.json();
+    }
+    throw new TypeError("Oops, we haven't got JSON!");
+  })
+  .then((json) => {
+    /* 进一步处理 JSON */
+  })
+  .catch((error) => {
+    console.error(error); // 这行代码也可能抛出错误，例如：when console = {}
+  })
+  .finally(() => {
+    isLoading = false;
+  });
+```
 
 ---

@@ -35,6 +35,5 @@ export function solveMaskMenu(layers: [Layer, Record<string, RouteT[]>][]) {
       }),
     );
   });
-  console.log('result', result);
   return result;
 }
