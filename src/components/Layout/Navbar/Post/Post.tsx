@@ -1,5 +1,6 @@
 import { handleClassName } from '@/utils/utils';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styles from './index.module.scss';
 
 type PostProps = {
@@ -7,7 +8,6 @@ type PostProps = {
   categories: string[];
   icon?: React.ReactElement;
   show: boolean;
-  onClick: (key: string) => void;
   onChange: (key: string) => void;
 };
 
@@ -16,7 +16,6 @@ export default function Post({
   title,
   categories,
   icon,
-  onClick,
   onChange,
 }: PostProps) {
   return (
@@ -35,14 +34,14 @@ export default function Post({
           )}`}
         >
           {categories.map((key) => (
-            <div
-              onClick={() => {
-                onClick(key);
-              }}
+            <Link
+              className="text-[var(--color-f-unhover)] duration-500 hover:text-white hover:bg-slate-800"
+              to={`/Articles/${title}/${key}`}
+              target="_blank"
               key={key}
             >
               {key}
-            </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -13,10 +13,6 @@ type NavbarProps = {
 export default function Navbar({ layers, btnGroup }: NavbarProps) {
   const [active, setActive] = useState('');
   const navigate = useNavigate();
-  const toArticle = (category: PostType, layer: Layer) => {
-    navigate(`/Articles/${layer}/${category}`);
-    setActive('');
-  };
   const handleKeyboard = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') setActive('');
   }, []);
@@ -42,7 +38,6 @@ export default function Navbar({ layers, btnGroup }: NavbarProps) {
               />
             }
             categories={Object.keys(layerItems)}
-            onClick={(category) => toArticle(category as PostType, layer)}
           />
         ))}
       </div>

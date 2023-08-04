@@ -10,19 +10,18 @@ export { label, summary } from './index.mdx';
 export default function PromiseCore() {
   useEffect(() => {
     new MyPromise<string>((resolve, reject) => {
-      setTimeout(() => {
-        resolve('异步测试1');
-        reject('test for status defender');
-      }, 1000);
-      // reject('test for status defender');
-    }).then(
-      (value) => {
-        console.log(asd);
-      },
-      (reason: any) => {
-        console.log(reason);
-      },
-    );
+      resolve('Promise-1 value');
+    })
+      .then((value) => {
+        console.log(value);
+        return 'then-1 value';
+      })
+      .then(() => {
+        return new MyPromise((resolve) => resolve('Promise-2'));
+      })
+      .then((value) => {
+        console.log(value);
+      });
     console.log('同步测试1');
   }, []);
 

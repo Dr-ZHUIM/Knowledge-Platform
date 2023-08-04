@@ -27,7 +27,9 @@ class MyPromise<T> {
     if (this.status === 'pending') {
       this.status = 'fulfilled';
       this.value = value;
-      this.callbacks.map((callback) => callback.onFullfilled(value));
+      setTimeout(() => {
+        this.callbacks.map((callback) => callback.onFullfilled(value));
+      });
     }
   }
   protected reject(reason: any) {
@@ -35,46 +37,48 @@ class MyPromise<T> {
     if (this.status === 'pending') {
       this.status = 'rejected';
       this.value = reason;
-      this.callbacks.map((callback) => callback.onRejected(reason));
+      setTimeout(() => {
+        this.callbacks.map((callback) => callback.onRejected(reason));
+      });
     }
   }
   public then(
-    onFullfilled: onFullfilledFunc<T | null> = () => {},
-    onRejected: onRejectedFunc = () => {},
+    onFullfilled: onFullfilledFunc<T | null> = () => this.value,
+    onRejected: onRejectedFunc = () => this.value,
   ) {
-    if (typeof onFullfilled !== 'function') {
-      onFullfilled = () => {};
-    }
-    if (typeof onRejected !== 'function') {
-      onRejected = () => {};
-    }
-    if (this.status === 'pending') {
-      this.callbacks.push({
-        onFullfilled: (value) => {
-          tryThen(() => onFullfilled(value));
-        },
-        onRejected: (reason) => {
-          tryThen(() => onRejected(reason));
-        },
-      });
-    }
-    if (this.status === 'fulfilled') {
-      setTimeout(() => {
-        onFullfilled(this.value);
-      });
-    } else if (this.status === 'rejected') {
-      setTimeout(() => {
-        onRejected(this.value);
-      });
-    }
-
-    function tryThen(callback: any) {
-      try {
-        callback();
-      } catch (error) {
-        onRejected(error);
+    return new MyPromise((resolve, reject) => {
+      if (this.status === 'pending') {
+        this.callbacks.push({
+          onFullfilled: (value) => {
+            tryThen(() => onFullfilled(value));
+          },
+          onRejected: (reason) => {
+            tryThen(() => onRejected(reason));
+          },
+        });
       }
-    }
+      if (this.status === 'fulfilled') {
+        setTimeout(() => {
+          tryThen(() => onFullfilled(this.value));
+        });
+      } else if (this.status === 'rejected') {
+        setTimeout(() => {
+          tryThen(() => onRejected(this.value));
+        });
+      }
+      function tryThen(callback: any) {
+        try {
+          const result = callback();
+          if (result instanceof MyPromise) {
+            result.then(resolve, reject);
+          } else {
+            resolve(result);
+          }
+        } catch (error) {
+          reject(error);
+        }
+      }
+    });
   }
 
   protected tryExecutor(callback: (...args: unknown[]) => unknown) {
