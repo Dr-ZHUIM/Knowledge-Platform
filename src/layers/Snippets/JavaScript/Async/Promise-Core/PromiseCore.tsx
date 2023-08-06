@@ -16,12 +16,13 @@ export default function PromiseCore() {
         console.log(value);
         return 'then-1 value';
       })
-      .then(() => {
-        return new MyPromise((resolve) => resolve('Promise-2'));
-      })
       .then((value) => {
         console.log(value);
       });
+    const p = new MyPromise<string>((resolve, reject) => {
+      resolve('Promise-3 value');
+    });
+    p.then(() => p);
     console.log('同步测试1');
   }, []);
 

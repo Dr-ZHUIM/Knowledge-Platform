@@ -1,8 +1,8 @@
 type PromiseType = 'pending' | 'fulfilled' | 'rejected';
 type ResolveFunc<T> = (value: T) => void;
 type RejectFunc = (reason: unknown) => void;
-type onFullfilledFunc<T> = (value: T) => unknown;
-type onRejectedFunc = (reason: unknown) => unknown;
+type onFullfilledFunc<T> = (value: T) => any;
+type onRejectedFunc = (reason: unknown) => any;
 type ExecutorType<T> = (resolve: ResolveFunc<T>, reject: RejectFunc) => void;
 
 class MyPromise<T> {
@@ -46,39 +46,45 @@ class MyPromise<T> {
     onFullfilled: onFullfilledFunc<T | null> = () => this.value,
     onRejected: onRejectedFunc = () => this.value,
   ) {
-    return new MyPromise((resolve, reject) => {
+    const _promise = new MyPromise<T>((resolve, reject) => {
       if (this.status === 'pending') {
         this.callbacks.push({
           onFullfilled: (value) => {
-            tryThen(() => onFullfilled(value));
+            this.tryThen(_promise, onFullfilled(value), resolve, reject);
           },
           onRejected: (reason) => {
-            tryThen(() => onRejected(reason));
+            this.tryThen(_promise, onRejected(reason), resolve, reject);
           },
         });
       }
       if (this.status === 'fulfilled') {
         setTimeout(() => {
-          tryThen(() => onFullfilled(this.value));
+          this.tryThen(_promise, onFullfilled(this.value), resolve, reject);
         });
       } else if (this.status === 'rejected') {
         setTimeout(() => {
-          tryThen(() => onRejected(this.value));
+          this.tryThen(_promise, onRejected(this.value), resolve, reject);
         });
       }
-      function tryThen(callback: any) {
-        try {
-          const result = callback();
-          if (result instanceof MyPromise) {
-            result.then(resolve, reject);
-          } else {
-            resolve(result);
-          }
-        } catch (error) {
-          reject(error);
-        }
-      }
     });
+    return _promise;
+  }
+
+  protected tryThen(
+    promise: MyPromise<T>,
+    result: T,
+    resolve: ResolveFunc<T>,
+    reject: RejectFunc,
+  ) {
+    try {
+      if (result instanceof MyPromise) {
+        result.then(resolve, reject);
+      } else {
+        resolve(result);
+      }
+    } catch (error) {
+      reject(error);
+    }
   }
 
   protected tryExecutor(callback: (...args: unknown[]) => unknown) {
