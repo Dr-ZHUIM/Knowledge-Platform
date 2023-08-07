@@ -9,7 +9,7 @@ export { label, summary } from './index.mdx';
 
 export default function PromiseCore() {
   useEffect(() => {
-    new MyPromise<string>((resolve, reject) => {
+    new MyPromise<string>((resolve) => {
       resolve('Promise-1 value');
     })
       .then((value) => {
@@ -19,7 +19,7 @@ export default function PromiseCore() {
       .then((value) => {
         console.log(value);
       });
-    const p = new MyPromise<string>((resolve, reject) => {
+    const p = new MyPromise<string>((resolve) => {
       resolve('Promise-3 value');
     });
     p.then(() => p);

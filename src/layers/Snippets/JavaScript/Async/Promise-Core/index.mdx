@@ -1,19 +1,21 @@
 export var label = '实现Promise';
 export var summary = 'Snippet-手撕Promise核心代码';
 
+# 实现 Promise
+
 ```ts
 type PromiseType = 'pending' | 'fulfilled' | 'rejected';
 type ResolveFunc<T> = (value: T) => void;
 type RejectFunc = (reason: unknown) => void;
-type onFullfilledFunc<T> = (value: T) => unknown;
-type onRejectedFunc = (reason: unknown) => unknown;
+type onFullfilledFunc<T> = (value: T) => any;
+type onRejectedFunc = (reason: unknown) => any;
 type ExecutorType<T> = (resolve: ResolveFunc<T>, reject: RejectFunc) => void;
 
 class MyPromise<T> {
   status: PromiseType;
   value: T | null;
   callbacks: {
-    onFullfilled: onFullfilledFunc<T | null>;
+    onFullfilled: onFullfilledFunc<T>;
     onRejected: onRejectedFunc;
   }[];
   constructor(executor: ExecutorType<T>) {
@@ -21,7 +23,7 @@ class MyPromise<T> {
     this.value = null;
     // to solve async callbacks
     this.callbacks = [];
-    this.resolveReject(() =>
+    this.tryExecutor(() =>
       // class's scope is strict mode so you should bind class's this to executor's callback functions
       executor(this.resolve.bind(this), this.reject.bind(this)),
     );
@@ -31,7 +33,9 @@ class MyPromise<T> {
     if (this.status === 'pending') {
       this.status = 'fulfilled';
       this.value = value;
-      this.callbacks.map((callback) => callback.onFullfilled(this.value));
+      setTimeout(() => {
+        this.callbacks.map((callback) => callback.onFullfilled(value));
+      });
     }
   }
   protected reject(reason: any) {
@@ -39,34 +43,57 @@ class MyPromise<T> {
     if (this.status === 'pending') {
       this.status = 'rejected';
       this.value = reason;
-      this.callbacks.map((callback) => callback.onRejected(this.value));
+      setTimeout(() => {
+        this.callbacks.map((callback) => callback.onRejected(reason));
+      });
     }
   }
   public then(
-    onFullfilled: onFullfilledFunc<T | null> = () => {},
-    onRejected: onRejectedFunc = () => {},
+    onFullfilled: onFullfilledFunc<T | null> = () => this.value,
+    onRejected: onRejectedFunc = () => this.value,
   ) {
-    if (typeof onFullfilled !== 'function') {
-      onFullfilled = () => {};
-    }
-    if (typeof onRejected !== 'function') {
-      onRejected = () => {};
-    }
-    if (this.status === 'pending') {
-      this.callbacks.push({ onFullfilled, onRejected });
-    }
-    if (this.status === 'fulfilled') {
-      setTimeout(() => {
-        this.resolveReject(() => onFullfilled(this.value));
-      });
-    } else if (this.status === 'rejected') {
-      setTimeout(() => {
-        this.resolveReject(() => onRejected(this.value));
-      });
+    const _promise = new MyPromise<T>((resolve, reject) => {
+      if (this.status === 'pending') {
+        this.callbacks.push({
+          onFullfilled: (value) => {
+            this.tryThen(_promise, onFullfilled(value), resolve, reject);
+          },
+          onRejected: (reason) => {
+            this.tryThen(_promise, onRejected(reason), resolve, reject);
+          },
+        });
+      }
+      if (this.status === 'fulfilled') {
+        setTimeout(() => {
+          this.tryThen(_promise, onFullfilled(this.value), resolve, reject);
+        });
+      } else if (this.status === 'rejected') {
+        setTimeout(() => {
+          this.tryThen(_promise, onRejected(this.value), resolve, reject);
+        });
+      }
+    });
+    return _promise;
+  }
+
+  protected tryThen(
+    promise: MyPromise<T>,
+    result: T,
+    resolve: ResolveFunc<T>,
+    reject: RejectFunc,
+  ) {
+    try {
+      if (result instanceof MyPromise) {
+        result.then(resolve, reject);
+      } else {
+        resolve(result);
+      }
+    } catch (error) {
+      reject(error);
     }
   }
 
-  protected resolveReject(callback: (...args: unknown[]) => unknown) {
+  protected tryExecutor(callback: (...args: unknown[]) => unknown) {
     try {
       callback();
     } catch (error) {

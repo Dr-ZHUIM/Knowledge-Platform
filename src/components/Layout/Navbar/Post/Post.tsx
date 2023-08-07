@@ -37,7 +37,6 @@ export default function Post({
             <Link
               className="text-[var(--color-f-unhover)] duration-500 hover:text-white hover:bg-slate-800"
               to={`/Articles/${title}/${key}`}
-              target="_blank"
               key={key}
             >
               {key}
