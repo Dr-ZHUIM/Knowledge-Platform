@@ -36,7 +36,12 @@ export default defineConfig({
     port: 8080,
     open: 'http://localhost:8080/blog/',
     host: '0.0.0.0',
-    proxy: {},
+    proxy: {
+      '/api': {
+        target: 'http://localhost:808080/',
+        bypass(req, res, options) {},
+      },
+    },
   },
   resolve: {
     alias: {
