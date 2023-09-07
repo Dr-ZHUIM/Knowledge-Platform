@@ -36,6 +36,7 @@ export default function Post({
           {categories.map((key) => (
             <Link
               className="text-[var(--color-f-unhover)] duration-500 hover:text-white hover:bg-slate-800"
+              onClick={() => onChange('')}
               to={`/Articles/${title}/${key}`}
               key={key}
             >

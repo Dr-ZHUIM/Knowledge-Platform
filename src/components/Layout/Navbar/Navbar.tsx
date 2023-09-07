@@ -28,7 +28,9 @@ export default function Navbar({ layers, btnGroup }: NavbarProps) {
         <Logo onClick={() => navigate('/')} imgPath={logoImg} />
         {layers.map(([layer, layerItems]) => (
           <Post
-            onChange={(title) => setActive(() => title)}
+            onChange={(title) => {
+              setActive(() => title);
+            }}
             show={active === layer}
             title={layer}
             key={layer}
