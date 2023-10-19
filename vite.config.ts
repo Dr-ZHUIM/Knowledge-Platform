@@ -38,8 +38,7 @@ export default defineConfig({
     host: '0.0.0.0',
     proxy: {
       '/api': {
-        target: 'http://localhost:808080/',
-        bypass(req, res, options) {},
+        target: 'http://localhost:808080/'
       },
     },
   },
