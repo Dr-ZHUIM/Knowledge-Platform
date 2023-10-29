@@ -1,0 +1,23 @@
+:root {
+  counter-reset: section;
+}
+
+.quote-title {
+  display: flex;
+  font-size: var(--font-vnm);
+  color: var(--color-primary);
+  transition: 0.5s;
+  &::before {
+    display: inline-flex;
+    counter-increment: section;
+    content: counter(section) '.';
+    margin-right: 0.5rem;
+  }
+}
+
+.quote-archor {
+  color: var(--color-success-light);
+  &:hover {
+    opacity: 0.6;
+  }
+}

@@ -12,6 +12,7 @@ import {
   useRef,
 } from 'react';
 import { Link } from 'react-router-dom';
+import Quote from './Quote/Quote';
 import styles from './index.module.scss';
 
 function TextResolver(text: string) {
@@ -159,7 +160,7 @@ function Sup({
 }) {
   return (
     <Tooltip title={title}>
-      <sup className="cursor-pointer">{children}</sup>
+      <sup className="cursor-pointer">{children || '注'}</sup>
     </Tooltip>
   );
 }
@@ -183,6 +184,7 @@ export default function MdxResolver({
           h4: H4,
           h5: H5,
           h6: H6,
+          Quote,
           a: Anchor,
           Anchor: Anchor,
           Link: Link,

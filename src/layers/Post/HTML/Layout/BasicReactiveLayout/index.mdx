@@ -1,11 +1,70 @@
 export var label = '响应式布局初论';
 export var summary = '本文将初步讲述如何进行响应式布局';
 
+import mainFlexPng from '@imgs/article/HTML/flex-axis.png';
+
 # 响应式布局初论
+
+响应式布局，我认为是非常关键的前端知识体系，单单谈一个响应式布局的方案我认为是不够完善也不能令人理解其中奥妙的。
+
+本文将从多方面来构建出响应式布局这一知识拼图
+
+## 目录
 
 ## 知识前提
 
+正如本站其他文章一同，本文将先提出理解本文所需的知识前提，以便不时所需。
+
 ### 1. Flex 布局 与 Grid 布局
+
+在 HTML5 的时代，前端开发者们往往使用 flex 弹性盒子布局与 grid 栅格布局来构建复杂的布局 (Layout)。
+
+相比较来说，flex 布局倾向单主轴，多副轴的布局，grid 布局倾向多主轴,多副轴<Sup title="grid布局的主轴为行级格式上下文轴，由writing-mode属性操作" />的布局，从其的一些基本属性就能看出端倪：
+
+- flex 基本案例
+
+```scss
+// scss
+.flex-example {
+  display: flex;
+  // 选择主轴
+  flex-direction: column;
+  // 操作整条主轴布局
+  justify-content: center;
+  // 操作所有的副轴布局
+  align-items: center;
+  // 副轴单独元素操作
+  .cross-item {
+    align-self: flex-start;
+    // flex布局的主轴元素无法单独布局，justify-self 不可用
+  }
+}
+```
+
+- grid 基本案例
+
+```scss
+.grid-example {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+  /* 操作所有的主轴布局 */
+  justify-content: center;
+  /* 操作所有的副轴布局 */
+  align-items: center;
+  /* 副轴单独元素操作 */
+  .cross-item {
+    justify-self: center;
+    align-self: center;
+  }
+}
+```
+
+#### Flex 布局
+
+<Image src={mainFlexPng} />
+
+#### Grid 布局
 
 ### 2. CSS 逻辑属性
 
@@ -14,3 +73,24 @@ export var summary = '本文将初步讲述如何进行响应式布局';
 ### 4. CSS 变量
 
 ### 5. onResize 事件处理
+
+## 响应式布局的定义
+
+## 响应式布局的内核
+
+## 响应式布局的方案
+
+## 文献引用
+
+<Quote
+  title="Relationship of grid layout with other layout methods ———————— mozilla "
+  to="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Relationship_of_grid_layout_with_other_layout_methods#grid_and_flexbox"
+/>
+<Quote
+  title="To Grid or to Flex? ———————— Michelle Barker"
+  to="https://css-irl.info/to-grid-or-to-flex/"
+/>
+<Quote
+  title="Quick! What’s the Difference Between Flexbox and Grid? ———————— Chris Coyier"
+  to="https://css-tricks.com/quick-whats-the-difference-between-flexbox-and-grid/"
+/>

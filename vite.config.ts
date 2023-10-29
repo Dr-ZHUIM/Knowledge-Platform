@@ -28,7 +28,11 @@ export default defineConfig({
      *    ```
      */
     mdx({
-      remarkPlugins: [remarkGFM, remarkEmoji, remarkToc],
+      remarkPlugins: [
+        remarkGFM,
+        remarkEmoji,
+        () => remarkToc({ heading: '(table[ -]of[ -])?contents?|toc|目录' }),
+      ],
       rehypePlugins: [rehypeHighlight],
     }),
   ],
@@ -38,7 +42,7 @@ export default defineConfig({
     host: '0.0.0.0',
     proxy: {
       '/api': {
-        target: 'http://localhost:808080/'
+        target: 'http://localhost:808080/',
       },
     },
   },
