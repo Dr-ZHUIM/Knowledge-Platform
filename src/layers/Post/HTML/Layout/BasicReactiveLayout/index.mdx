@@ -1,5 +1,6 @@
 export var label = '响应式布局初论';
 export var summary = '本文将初步讲述如何进行响应式布局';
+import FlexDemo from './flex-demo.tsx';
 
 import mainFlexPng from '@imgs/article/HTML/flex-axis.png';
 
@@ -52,17 +53,38 @@ import mainFlexPng from '@imgs/article/HTML/flex-axis.png';
   justify-content: center;
   /* 操作所有的副轴布局 */
   align-items: center;
-  /* 副轴单独元素操作 */
-  .cross-item {
+  /* 单独元素操作 */
+  .some-item {
     justify-self: center;
     align-self: center;
   }
 }
 ```
 
+可以注意到，grid 布局允许我们操作布局内单独元素的主副轴位置，而 flex 布局只允许操作副轴位置。
+
+```scss
+// flex - 副轴单独元素操作
+.flex-item {
+  align-self: flex-start;
+}
+// grid - 单独元素操作
+.grid-item {
+  justify-self: center;
+  align-self: center;
+}
+// grid - 如想要同时操作该元素在两条轴的位置，可以使用 place-self 这个复合属性
+.grid-shorten-item {
+  // align-self justify-self
+  place-self: start center;
+}
+```
+
 #### Flex 布局
 
 <Image src={mainFlexPng} />
+
+<FlexDemo />
 
 #### Grid 布局
 

@@ -1,0 +1,32 @@
+.flex-box {
+  display: flex;
+  height: 400px;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.flex-section-axis-one,
+.flex-section-axis-two,
+.flex-section-axis-three {
+  position: relative;
+  text-align: center;
+  line-height: 120px;
+  height: 120px;
+}
+
+.flex-section-axis-one {
+  background-color: rgba(#f1c40f, 0.5);
+  align-self: flex-start;
+}
+
+.flex-section-axis-two {
+  background-color: rgba($color: #3498db, $alpha: 0.5);
+  align-self: center;
+}
+
+.flex-section-axis-three {
+  background-color: rgba($color: #9b59b6, $alpha: 0.5);
+  align-self: flex-end;
+}
