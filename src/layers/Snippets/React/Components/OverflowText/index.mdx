@@ -1,0 +1,115 @@
+export var label = '省略文本';
+export var summary =
+  '该组件能够在父元素提供宽度的前提下，提供文本省略功能，同时鼠标移至被省略的文本会有文本提示弹出';
+
+## 省略文本
+
+该组件能够在父元素提供宽度的前提下，提供文本省略功能，同时鼠标移至被省略的文本会有文本提示弹出
+
+### 使用案例
+
+<OverflowTextDemo />
+
+```tsx
+function OverflowTextDemo() {
+  return (
+    <div style={{ width: 300, background: 'red', padding: 10 }}>
+      <OverflowText
+        text="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempora harum,
+				quibusdam molestiae optio omnis ad nihil cumque sit necessitatibus commodi
+				reiciendis nostrum placeat ratione vel eligendi! Laborum dicta excepturi
+				necessitatibus doloremque maiores nam ullam tempore quia. Amet ab ex
+				facere?"
+      />
+    </div>
+  );
+}
+```
+
+### CSS
+
+```css
+.text-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+```
+
+### JS Ver.
+
+```jsx
+import React, { useState, useRef, useLayoutEffect } from 'react';
+import { Tooltip } from 'antd';
+import styles from './index.module.css';
+export default function OverflowText({ text, className, style, tooltipProps }) {
+  const textRef = useRef(null);
+  const [isOverFlow, setIsOverFlow] = useState(false);
+
+  useLayoutEffect(() => {
+    if (textRef.current) {
+      setIsOverFlow(textRef.current.clientWidth < textRef.current.scrollWidth);
+    }
+  }, [text]);
+
+  return (
+    <Tooltip trigger={'hover'} title={isOverFlow && text} {...tooltipProps}>
+      <div
+        style={style}
+        className={`${styles['text-ellipsis']}${
+          className ? ` ${className}` : ''
+        }`}
+        ref={textRef}
+      >
+        {text}
+      </div>
+    </Tooltip>
+  );
+}
+```
+
+### TS Ver.
+
+```tsx
+import React, { useState, useRef, useLayoutEffect } from 'react';
+import { Tooltip } from 'antd';
+import type { TooltipProps } from 'antd';
+import styles from './index.module.scss';
+
+type OverflowTextProps = {
+  text: string;
+  className?: string;
+  style?: React.CSSProperties;
+  tooltipProps?: TooltipProps;
+};
+
+export default function OverflowText({
+  text,
+  className,
+  style,
+  tooltipProps,
+}: OverflowTextProps) {
+  const textRef = useRef<HTMLDivElement | null>(null);
+  const [isOverFlow, setIsOverFlow] = useState(false);
+
+  useLayoutEffect(() => {
+    if (textRef.current) {
+      setIsOverFlow(textRef.current.clientWidth < textRef.current.scrollWidth);
+    }
+  }, [text]);
+
+  return (
+    <Tooltip trigger={'hover'} title={isOverFlow && text} {...tooltipProps}>
+      <div
+        style={style}
+        className={`${styles['text-ellipsis']}${
+          className ? ` ${className}` : ''
+        }`}
+        ref={textRef}
+      >
+        {text}
+      </div>
+    </Tooltip>
+  );
+}
+```
