@@ -1,19 +1,19 @@
 .aside-background {
   --color-aside-background: #fff;
   --color-aside: var(--color-primary);
-  &[data-mode='info'] {
+  &[data-type='info'] {
     --color-aside-background: var(--color-muted-background);
     --color-aside: var(--color-muted);
   }
-  &[data-mode='warning'] {
+  &[data-type='warning'] {
     --color-aside-background: var(--color-warning-background);
     --color-aside: var(--color-warning);
   }
-  &[data-mode='danger'] {
+  &[data-type='danger'] {
     --color-aside-background: var(--color-danger-background);
     --color-aside: var(--color-danger);
   }
-  &[data-mode='success'] {
+  &[data-type='success'] {
     --color-aside-background: var(--color-success-background);
     --color-aside: var(--color-success);
   }
