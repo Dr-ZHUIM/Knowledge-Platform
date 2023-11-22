@@ -14,6 +14,7 @@ import {
 import { Link } from 'react-router-dom';
 import Quote from './Quote/Quote';
 import styles from './index.module.scss';
+import Aside from '../Aside/Aside';
 
 function TextResolver(text: string) {
   return text;
@@ -186,6 +187,7 @@ export default function MdxResolver({
           h6: H6,
           Quote,
           a: Anchor,
+          Aside,
           Anchor: Anchor,
           Link: Link,
           pre: Pre,

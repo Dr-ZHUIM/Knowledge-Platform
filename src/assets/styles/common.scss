@@ -39,9 +39,15 @@ html {
   --color-primary-800: rgba(0, 21, 41, 0.8);
   --color-primary-900: rgba(0, 21, 41, 0.9);
   --color-light: #002445;
+  --color-muted-background: hsl(210deg, 55%, 92%);
+  --color-muted: hsl(245deg, 100%, 60%);
   --color-success: #116526;
+  --color-success-background: hsla(135, 71%, 23%, 0.25);
   --color-success-light: #189437;
+  --color-warning-background: hsla(52deg, 100%, 50%, 0.25);
+  --color-warning: hsl(37deg, 100%, 50%);
   --color-danger: #ae221d;
+  --color-danger-background: hsla(2, 71%, 40%, 0.25);
   --color-danger-light: #e3342f;
   --color-f-unhover: rgba(255, 255, 255, 0.65);
   --color-border: #bebebe;
