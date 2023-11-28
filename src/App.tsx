@@ -1,5 +1,5 @@
 // libs import
-import { createContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { Navigate, Route, Routes } from 'react-router-dom';
 // routers import
@@ -54,4 +54,4 @@ function App() {
   );
 }
 
-export default App;
+export default React.memo(App);

@@ -1,6 +1,5 @@
 export var label = '响应式布局初论';
 export var summary = '本文将初步讲述如何进行响应式布局';
-import FlexDemo from './flex-demo.tsx';
 
 import mainFlexPng from '@imgs/article/HTML/flex-axis.png';
 
@@ -95,6 +94,23 @@ import mainFlexPng from '@imgs/article/HTML/flex-axis.png';
 
 </Aside>
 
+CSS-Grid 布局由 rows 与 columns 共同组成， 如果接触过现代的一些组件库如：Bootstrap、AntDesign、ElementUI 的话，应当会对这些栅格关键词有所熟悉，但是他们的理念是完全不同的：
+
+- CSS-Grid 布局完全由 CSS 控制，容器的 `display` 属性为 `grid`，需要<Mark>封装成响应式方案</Mark>
+- 组件库 Grid 布局可能为 CSS-class 控制（如 Bootstrap），也有可能直接就是框架组件（如 Antd 或者 ElementUI），容器的 `display` 属性为 `flex`，是<Mark>成体系的响应式方案</Mark>
+
+---
+
+##### Grid 默认行为
+
+一个 `display` 属性为 `grid` 的容器，默认只有一列，每次添加元素都会占据新的一行。
+
+<GridDefaultDemo />
+
+可以使用 `grid-template-columns` 与 `grid-template-rows` 来规定列数与行数，其中被分划的格子就是子元素所处的位置
+
+---
+
 ### 2. CSS 逻辑属性
 
 ### 3. Rem 与 px 单位使用场景
@@ -102,6 +118,15 @@ import mainFlexPng from '@imgs/article/HTML/flex-axis.png';
 ### 4. CSS 变量
 
 ### 5. onResize 事件处理
+
+## 粗分布局
+
+CSS 有多种布局算法组成。
+
+- Flow 布局：默认的布局算法，由 BFC 与 IFC 共同构成，用于描述文档
+- Table 布局：用于描述表格型数据
+- Flex 布局：用于于一条轴线中布置内容
+- Grid 布局：用于使用多条轴线内容
 
 ## 响应式布局的定义
 
