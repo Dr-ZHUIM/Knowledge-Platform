@@ -101,13 +101,64 @@ CSS-Grid 布局由 rows 与 columns 共同组成， 如果接触过现代的一�
 
 ---
 
-##### Grid 默认行为
+##### Grid Flow
 
-一个 `display` 属性为 `grid` 的容器，默认只有一列，每次添加元素都会占据新的一行。
+一个 `display` 属性为 `grid` 的容器，默认只有一个 column，每次添加元素都会占据新的 row。在不限制 Grid 容器高度的情况下，其高度相当于 `fit-content`。
+
+<Aside title="简单描述行与列">
+对于 Grid 布局来说，row（行） 与 column（列） 就如同 <Mark>概念角度上的</Mark> Table 的 tr 与 td，他们从 DOM
+角度并不存在， 但是能够从 Grid 算法角度控制处于其中的元素的大小与位置。
+
+我们将由 rows 与 columns 组成的 **元素布局顺序** 称为 Grid Flow (Grid 流)。
+
+对于 column 与 row，我们会在下一节进行描述
+
+</Aside>
 
 <GridDefaultDemo />
 
-可以使用 `grid-template-columns` 与 `grid-template-rows` 来规定列数与行数，其中被分划的格子就是子元素所处的位置
+倘若限制 Grid 容器高度， row 会自适应的平分高度
+
+<GridDefaultDivideHeightDemo />
+
+##### Grid 行与列
+
+可以使用 `grid-template-columns` 与 `grid-template-rows` 来规定 column 数与 row 数，其中被分划的格子就是子元素所处的位置。
+
+默认情况下，Grid 容器只会创建一条 column，我们可以使用 `grid-template-columns` 来添加 columns
+
+<GridColumnsDemo> 
+```html
+<style>
+  .grid-box {
+    display: grid;
+    grid-template-columns: 25% 75%;
+  }
+  .grid-item {
+    display: grid;
+    place-content: center;
+    height: 100px;
+    border: 2px solid hsl(210deg 8% 50%);
+    border-radius: 3px;
+    background: hsl(210deg 15% 20%);
+    color: white;
+    font-size: 1.325rem;
+    font-weight: bold;
+  }
+  .grid-item:first-child {
+    margin-right: 2px;
+  }
+  .grid-item:last-child {
+    margin-left: 2px;
+  }
+</style>
+
+<div class="grid-box">
+  <div class="grid-child">1</div>
+  <div class="grid-child">2</div>
+</div>
+```
+</GridColumnsDemo>
 
 ---
 
@@ -147,4 +198,8 @@ CSS 有多种布局算法组成。
 <Quote
   title="Quick! What’s the Difference Between Flexbox and Grid? ———————— Chris Coyier"
   to="https://css-tricks.com/quick-whats-the-difference-between-flexbox-and-grid/"
+/>
+<Quote
+  title="An Interactive Guide to CSS Grid ———————— Josh W Comeau"
+  to="https://www.joshwcomeau.com/css/interactive-guide-to-grid/"
 />

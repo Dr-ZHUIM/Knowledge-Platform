@@ -7,7 +7,7 @@ function globFolders(): Record<Layer, [string, any[]][]> {
   return {
     Post: Object.entries(
       import.meta.glob(`@/layers/Post/**/*.tsx`, { eager: true }),
-    ),
+    ).filter(([key]) => !key.includes('/components/')) as [string, any[]][],
     Snippet: Object.entries(
       import.meta.glob(`@/layers/Snippets/**/*.tsx`, { eager: true }),
     ),
