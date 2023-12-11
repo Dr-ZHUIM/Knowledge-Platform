@@ -5,8 +5,10 @@ import mdx from '@mdx-js/rollup';
 import remarkEmoji from 'remark-emoji';
 import { builtinModules } from 'module';
 import remarkGFM from 'remark-gfm';
+import remarkMath from 'remark-math';
 import rehypeHighlight from 'rehype-highlight';
 import remarkToc from 'remark-toc';
+import rehypeKatex from 'rehype-katex';
 import path from 'path';
 
 // https://vitejs.dev/config/
@@ -29,11 +31,12 @@ export default defineConfig({
      */
     mdx({
       remarkPlugins: [
+        remarkMath,
         remarkGFM,
         remarkEmoji,
         () => remarkToc({ heading: '(table[ -]of[ -])?contents?|toc|目录' }),
       ],
-      rehypePlugins: [rehypeHighlight],
+      rehypePlugins: [rehypeHighlight, rehypeKatex as any],
     }),
   ],
   server: {
