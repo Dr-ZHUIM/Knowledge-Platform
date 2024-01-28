@@ -40,12 +40,14 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: 8080,
-    open: 'http://localhost:8080/blog/',
+    port: 8081,
+    open: 'http://localhost:8081/blog/',
     host: '0.0.0.0',
     proxy: {
       '/api': {
-        target: 'http://localhost:808080/',
+        target: 'http://127.0.0.1:8080/article/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
   },

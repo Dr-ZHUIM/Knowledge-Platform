@@ -30,6 +30,7 @@
     "@vitejs/plugin-react": "^3.1.0",
     "antd": "^5.4.0",
     "autoprefixer": "^10.4.14",
+    "axios": "^1.6.5",
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -57,7 +58,7 @@
     "vite": "^4.2.0",
     "vite-plugin-inspect": "^0.7.32",
     "vitest": "^0.31.0",
-    "xmind-embed-viewer": "^1.1.0"
+    "xmind-embed-viewer": "^1.2.0"
   },
   "overrides": {
     "array-includes": "npm:@nolyfill/array-includes@latest",

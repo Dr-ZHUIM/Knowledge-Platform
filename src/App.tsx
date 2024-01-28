@@ -17,6 +17,7 @@ import '@styles/md.scss';
 import '@styles/normalize.scss';
 import 'antd/dist/reset.css';
 import Articles from './pages/Articles/Articles';
+import KnowledgeCanvas from './pages/KnowledgeCanvas';
 
 export const AppContext = createContext<{
   isMobile: boolean;
@@ -45,6 +46,7 @@ function App() {
           {routers}
           <Route path="/Articles/:layer/:category" element={<Articles />} />
           <Route path="/HOME" element={<Home />} />
+          <Route path="/KnowledgeCanvas" element={<KnowledgeCanvas />} />
           <Route path="/Error/404" element={<ErrorPage />} />
           <Route path="/" element={<Navigate to="/HOME" replace />} />
           <Route path="/*" element={<Navigate to="Error/404" replace />} />

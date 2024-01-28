@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useId } from 'react';
 import { DownOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../Logo/Logo';
 import Post from './Post/Post';
 import styles from './index.module.scss';
@@ -42,6 +42,14 @@ export default function Navbar({ layers, btnGroup }: NavbarProps) {
             categories={Object.keys(layerItems)}
           />
         ))}
+        <Link
+          to="/KnowledgeCanvas"
+          className="text-[var(--color-f-unhover)] duration-500 hover:text-white hover:bg-[var(--color-light)]"
+        >
+          <div className="h-[60px] leading-[60px] p-[0_1rem]  text-[1.1rem]">
+            KnowledgeCanvas
+          </div>
+        </Link>
       </div>
       {btnGroup}
     </header>
